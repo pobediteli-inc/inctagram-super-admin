@@ -56,7 +56,7 @@ export const Header: FC = () => {
           textAlign={"center"}
           onClick={handleOnMainPage}
         >
-          Inctagram
+          InctagramSuperAdmin
         </Typography>
         <div className={s.selectButtonsWrapper}>
           <Select defaultValue={"en"} items={selectLanguages} groupLabel={"Languages"} />

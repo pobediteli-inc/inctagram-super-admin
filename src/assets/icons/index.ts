@@ -87,3 +87,5 @@ export { default as Trash } from "./Trash";
 export { default as TrashOutline } from "./TrashOutline";
 export { default as TrendingUp } from "./TrendingUp";
 export { default as TrendingUpOutline } from "./TrendingUpOutline";
+export { default as Statistics } from "./Statistics";
+export { default as Payments } from "./Payments";

@@ -2,73 +2,39 @@
 
 import s from "./sidebar.module.css";
 import {
-  Home,
-  PlusSquareOutline,
   Person,
-  MessageCircleOutline,
-  SearchOutline,
-  TrendingUpOutline,
-  BookmarkOutline,
-  LogOutOutline,
+  ImageOutline, Statistics, Payments,
 } from "assets/icons";
 import { SidebarItem, SidebarLink } from "./sidebarLink/sidebarLink";
-import { useMeQuery } from "store/services/api/auth";
 
 const sidebarItems: SidebarItem[] = [
   {
-    href: "/",
-    icon: <Home width={24} height={24} />,
-    title: "Home",
-  },
-  {
-    href: "/create",
-    icon: <PlusSquareOutline width={24} height={24} />,
-    title: "Create",
-  },
-  {
-    href: "/my-profile",
+    href: "/users-list",
     icon: <Person width={24} height={24} />,
-    title: "My Profile",
+    title: "Users list",
   },
   {
-    href: "/messenger",
-    icon: <MessageCircleOutline width={24} height={24} />,
-    title: "Messenger",
+    href: "/statistics",
+    icon: <Statistics width={24} height={24} />,
+    title: "Statistics",
   },
   {
-    href: "/search",
-    icon: <SearchOutline width={24} height={24} />,
-    title: "Search",
+    href: "/payments-list",
+    icon: <Payments width={24} height={24} />,
+    title: "Payments list",
   },
   {
-    href: "/statistic",
-    icon: <TrendingUpOutline width={24} height={24} />,
-    title: "Statistic",
-  },
-  {
-    href: "/favorites",
-    icon: <BookmarkOutline width={24} height={24} />,
-    title: "Favorites",
-  },
-  {
-    href: "/logout",
-    icon: <LogOutOutline width={24} height={24} />,
-    title: "Log Out",
+    href: "/posts-list",
+    icon: <ImageOutline width={24} height={24} />,
+    title: "Posts list",
   },
 ];
 
 export const Sidebar = () => {
-  const { data } = useMeQuery();
-
-  if (!data?.userId) return null;
-
-  const dynamicSidebarItems = sidebarItems.map((item) =>
-    item.title === "My Profile" ? { ...item, href: `/my-profile/${data?.userId}` } : item
-  );
 
   return (
     <nav className={s.navbar}>
-      {dynamicSidebarItems.map((i, index) => (
+      {sidebarItems.map((i, index) => (
         <SidebarLink item={i} key={index} />
       ))}
     </nav>
