@@ -43,7 +43,7 @@ export const GoogleOAuth: FC<Props> = ({ redirect }) => {
         setStatus({
           status: "error",
           message:
-            "Google authentication was not completed or was cancelled. Please try again or choose another sign-in method.",
+            "Google authentication was not completed or was cancelled. Please try again or choose another sign-in-admin method.",
         })
       );
     }

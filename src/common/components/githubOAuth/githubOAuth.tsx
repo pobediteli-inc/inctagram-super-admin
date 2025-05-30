@@ -39,7 +39,7 @@ export const GithubOAuth: FC<Props> = ({ redirect }) => {
         setStatus({
           status: "error",
           message:
-            "GitHub authentication was not completed or was cancelled. Please try again or choose another sign-in method.",
+            "GitHub authentication was not completed or was cancelled. Please try again or choose another sign-in-admin method.",
         })
       );
     }

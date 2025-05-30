@@ -1,9 +1,9 @@
-import PublicPage from "./publicPage/page";
+import SingInAdmin from "./sign-in-admin/page";
 
 export default function Home() {
   return (
     <div>
-      <PublicPage />
+      <SingInAdmin />
     </div>
   );
 }
