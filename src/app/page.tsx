@@ -1,9 +1,9 @@
-import styles from "./page.module.css";
+import PublicPage from "./publicPage/page";
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      SuperAdmin
+    <div>
+      <PublicPage />
     </div>
   );
 }

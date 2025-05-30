@@ -1,0 +1,12 @@
+.modalWrapper {
+  min-width: 1000px;
+  background-color: var(--dark-300);
+  display: flex;
+  flex-direction: column;
+}
+
+.photosAndDescription {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
