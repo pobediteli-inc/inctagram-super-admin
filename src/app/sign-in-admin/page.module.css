@@ -7,3 +7,21 @@
   border: 1px solid #333;
   color: var(--light-100);
 }
+
+.title {
+  align-self: center;
+}
+
+.card {
+  width: 26.6rem;
+  padding: 1.5rem;
+  margin: 3rem;
+}
+.form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 1.125rem;
+  padding: 1.5rem;
+}
