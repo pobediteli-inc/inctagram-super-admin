@@ -9,6 +9,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {z} from "zod";
 import {useMutation} from "@apollo/client";
 import {LOGIN_ADMIN} from "../../apollo/mutations/admin";
+import {updateLoginState} from "../../apollo/client";
 
 const signInSchema = z
   .object({
@@ -55,6 +56,8 @@ export default function SingInAdmin() {
       const res = await loginAdmin({variables: {email: data.email, password: data.password}})
 
       if (res.data.loginAdmin.logged) {
+        updateLoginState(true);
+
         setToast({ type: "success", message: "Logged in successfully!", open: true });
         reset()
         router.replace("/users-list")
