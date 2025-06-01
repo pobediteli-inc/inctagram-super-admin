@@ -1,12 +1,14 @@
 "use client"
 
-import {Button, Card, ControlledTextField, TextField, Typography} from "common/components";
+import {Button, Card, TextField, Toast, Typography} from "common/components";
 import s from "./page.module.css";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import React, {useState} from "react";
+import {useRouter} from "next/navigation";
 import {Controller, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {z} from "zod";
+import {useMutation} from "@apollo/client";
+import {LOGIN_ADMIN} from "../../apollo/mutations/admin";
 
 const signInSchema = z
   .object({
@@ -24,13 +26,19 @@ const signInSchema = z
 export type SignInFormValues = z.infer<typeof signInSchema>;
 
 export default function SingInAdmin() {
-  const [textFieldError, setTextFieldError] = useState<string>()
+  const [toast, setToast] = useState<{
+    type: "success" | "error" | "warning";
+    message: string;
+    open: boolean;
+  } | null>(null);
 
   const router = useRouter();
 
+  const [loginAdmin] = useMutation(LOGIN_ADMIN)
+
   const {
     control,
-    formState: { isDirty, isValid, errors },
+    formState: {isDirty, isValid, errors},
     handleSubmit,
     reset,
   } = useForm<SignInFormValues>({
@@ -42,32 +50,33 @@ export default function SingInAdmin() {
     resolver: zodResolver(signInSchema),
   })
 
-  const onSubmitSignInForm = async (data: SignInFormValues) => {}
+  const onSubmitSignInForm = async (data: SignInFormValues) => {
+    try {
+      const res = await loginAdmin({variables: {email: data.email, password: data.password}})
+
+      if (res.data.loginAdmin.logged) {
+        setToast({ type: "success", message: "Logged in successfully!", open: true });
+        reset()
+        router.replace("/users-list")
+      } else {
+        reset()
+        setToast({ type: "error", message: "You are not logged in as an administrator. Check the data you entered and try again.", open: true });
+      }
+    } catch (error: any) {
+      if (error.data) {
+        setToast({ type: "error", message: "The email or password are incorrect. Try again please.", open: true });
+      }
+    }
+  }
 
   return <div className={s.signInAdmin}>
     <Card className={s.card}>
       <form className={s.form} noValidate onSubmit={handleSubmit(onSubmitSignInForm)}>
         <Typography variant={"h1"} className={s.title}>Sign In</Typography>
-        <ControlledTextField
-          autoComplete={"email"}
-          control={control}
-          error={textFieldError}
-          label={"email"}
-          name={"email"}
-          type={"email"}
-        />
-        <ControlledTextField
-          autoComplete={'current-password'}
-          control={control}
-          error={textFieldError}
-          label={"password"}
-          name={"password"}
-          type={"password"}
-        />
         <Controller
           name={"email"}
           control={control}
-          render={({ field }) => (
+          render={({field}) => (
             <TextField
               variant={"standard"}
               type={"email"}
@@ -82,7 +91,7 @@ export default function SingInAdmin() {
         <Controller
           name={"password"}
           control={control}
-          render={({ field }) => (
+          render={({field}) => (
             <TextField
               variant={"standard"}
               type={"password"}
@@ -99,5 +108,13 @@ export default function SingInAdmin() {
         </Button>
       </form>
     </Card>
+    {toast && (
+      <Toast
+        type={toast.type}
+        message={toast.message}
+        open={toast.open}
+        setOpen={(open) => setToast((prev) => (prev ? { ...prev, open } : null))}
+      />
+    )}
   </div>;
 }
