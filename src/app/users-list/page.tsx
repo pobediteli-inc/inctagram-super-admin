@@ -40,9 +40,6 @@ export default function UsersList() {
       statusFilter: 'ALL',
     },
   });
-  console.log(data)
-
-  //const paginatedData = data?.getUsers.users.slice((currentPage - 1) * pageSize, currentPage * pageSize) || [];
 
   return <div className={styles.usersList}>
     <div className={s.wrapper}>
@@ -61,7 +58,7 @@ export default function UsersList() {
             <td className={s.cell}>{user.userBan && <Block />}{user.id}</td>
             <td className={s.cell}>{user.userName}</td>
             <td className={s.cell}>{user.email}</td>
-            <td className={s.cell}>{new Date(user.createdAt).toLocaleDateString()}</td>
+            <td className={s.cell}>{new Date(user.createdAt).toLocaleDateString().replaceAll('/', '.')}</td>
           </tr>
         ))}
         </tbody>

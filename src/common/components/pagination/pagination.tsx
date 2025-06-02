@@ -74,7 +74,7 @@ export const Pagination = ({ totalPages }: PaginationProps) => {
       <div className={clsx(s.selectContainer, "typography-variant--regular_14")}>
         <span>Show</span>
         <select className={s.selectBox} value={pageSize} onChange={(e) => onPageSizeChange(Number(e.target.value))}>
-          {[10, 20, 30, 50, 100].map((size) => (
+          {[8, 10, 20, 30, 50, 100].map((size) => (
             <option key={size} value={size}>
               {size}
             </option>
