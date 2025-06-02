@@ -24,6 +24,7 @@ export const cache = new InMemoryCache({
 });
 
 export const client = new ApolloClient({
+  headers: { authorization: 'Basic [YWRtaW5AZ21haWwuY29tOmFkbWlu]' },
   uri: "https://inctagram.work/api/v1/graphql",
   cache: cache,
 });
