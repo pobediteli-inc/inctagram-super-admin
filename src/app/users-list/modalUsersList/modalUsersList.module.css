@@ -1,0 +1,25 @@
+.modalDeleteUser {
+  max-width: 378px;
+  width: 100%;
+}
+
+.modalContainer {
+  padding: 30px 24px 36px;
+}
+
+.button {
+  width: 100%;
+}
+
+.buttonWrapper {
+  gap: 70px;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 42px;
+}
+
+.span {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+}

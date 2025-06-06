@@ -1,0 +1,59 @@
+.wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.icon {
+  top: 2px;
+  position: relative;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--primary-500);
+  }
+}
+
+.listWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.iconWithText {
+  display: flex;
+  gap: 12px;
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 180px;
+  max-height: 120px;
+  padding: 12px;
+  background-color: var(--dark-500);
+  border: 1px solid var(--dark-100);
+  border-radius: 2px;
+  z-index: 10;
+  overflow: hidden;
+  animation: fade-in 0.2s ease-in-out;
+}
+
+.notificationHeader {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--dark-100);
+  padding-right: 12px;
+  color: var(--light-100);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
