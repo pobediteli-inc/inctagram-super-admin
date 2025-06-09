@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { GET_AUTH_STATUS } from "../../apollo/client";
 import { GET_USERS } from "../../apollo/queries/users";
-import { Pagination } from "../../common/components";
+import { DropdownMenu, Pagination } from "../../common/components";
 import s from "./page.module.css";
 import { Block } from "../../assets/icons";
 import { DeleteUserModal } from "./modalUsersList/deleteUserModal";
@@ -75,7 +75,9 @@ export default function UsersList() {
                   <td className={s.cell}>{user.email}</td>
                   <td className={s.cell}>{new Date(user.createdAt).toLocaleDateString().replaceAll("/", ".")}</td>
                   <td className={s.cell}>
-                    <ChangeUserStatusDropdown onDeleteClick={() => handleOpenDeleteModal(user.id)} />
+                    <DropdownMenu className={s.dropdown}>
+                      <ChangeUserStatusDropdown onDeleteClick={() => handleOpenDeleteModal(user.id)} />
+                    </DropdownMenu>
                   </td>
                 </tr>
                 <DeleteUserModal

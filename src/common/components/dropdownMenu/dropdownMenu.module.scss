@@ -3,6 +3,8 @@
 }
 
 .dropdownContent {
+  position: relative;
+  right: -320px;
   display: flex;
   flex-direction: column;
   gap: 12px;

@@ -39,3 +39,10 @@
   text-align: left;
   height: 48px;
 }
+
+.dropdown {
+  &:hover,
+  &:active {
+    color: var(--primary-500);
+  }
+}
