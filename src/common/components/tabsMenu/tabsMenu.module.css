@@ -1,4 +1,30 @@
+.container {
+  width: 100%;
+  padding-top: 36px;
+  padding-left: 24px;
+}
+
 .tabs {
+  width: 100%;
+}
+
+.tabList {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--dark-100);
+  position: relative;
+}
+
+.underline {
+  position: absolute;
+  bottom: -2px;
+  height: 2px;
+  background-color: var(--primary-500);
+  border-radius: 1px;
+}
+
+.tab {
   position: relative;
   padding: 6px 24px;
   min-width: 85px;
@@ -13,28 +39,28 @@
   transition: all 0.3s ease;
 }
 
-.tabs:hover {
+.tab:hover {
   background-color: rgb(35 78 153 / 15%);
 }
 
-.tabs:active {
+.tab:active {
   background-color: rgb(115 165 255 / 15%);
 }
 
-.tabs:focus {
+.tab:focus {
   outline: 2px solid var(--primary-700);
   border-radius: 2px;
 }
 
-.tabs:disabled {
+.tab:disabled {
   color: var(--dark-300);
   cursor: not-allowed;
 }
 
-.tabs:focus:not(:focus-visible) {
+.tab:focus:not(:focus-visible) {
   outline: none;
 }
 
-.tabs[data-state="active"] {
+.tab[data-state="active"] {
   color: var(--primary-500);
 }

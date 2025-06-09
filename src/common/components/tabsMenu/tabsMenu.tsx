@@ -1,35 +1,29 @@
 "use client";
 
 import * as Tabs from "@radix-ui/react-tabs";
-import { Tab } from "common/components";
-import s from "./page.module.css";
-import { useRef, useState, useLayoutEffect, useEffect } from "react";
+import { Tab } from "./tab";
+import s from "./tabsMenu.module.css";
+import { useRef, useState, useLayoutEffect, ReactNode } from "react";
 import { motion } from "framer-motion";
-import { GeneralInfo } from "./generalInfo/generalInfo";
-import { Devices } from "./devices/devices";
-import { AccountManagement } from "./accountManagement/accountManagement";
-import { MyPayments } from "./myPayments/myPayments";
-import { useSearchParams } from "next/navigation";
 
-export default function Settings() {
-  const [activeTab, setActiveTab] = useState("generalInfo");
+export type TabItem = {
+  value: string;
+  title: string;
+  component: ReactNode;
+};
+
+type Props = {
+  tabs: TabItem[];
+  activeTabValue: string;
+  setActiveTabValue: (value: string) => void;
+};
+
+export const TabsMenu = ({ tabs, activeTabValue, setActiveTabValue }: Props) => {
   const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const [underlineStyle, setUnderlineStyle] = useState({ left: 0, width: 0 });
-  const searchParams = useSearchParams();
-
-  const tabs = [
-    { value: "generalInfo", title: "General Information", component: <GeneralInfo /> },
-    { value: "devices", title: "Devices", component: <Devices /> },
-    {
-      value: "accountManagement",
-      title: "Account Management",
-      component: <AccountManagement />,
-    },
-    { value: "myPayments", title: "My Payments", component: <MyPayments /> },
-  ];
 
   useLayoutEffect(() => {
-    const el = tabRefs.current[activeTab];
+    const el = tabRefs.current[activeTabValue];
     if (el) {
       const rect = el.getBoundingClientRect();
       const parentRect = el.parentElement?.getBoundingClientRect();
@@ -40,17 +34,11 @@ export default function Settings() {
         });
       }
     }
-  }, [activeTab]);
-  useEffect(() => {
-    const isSuccess = searchParams.get("success") || searchParams.get("error");
-    if (isSuccess) {
-      setActiveTab("accountManagement");
-    }
-  }, [searchParams]);
+  }, [activeTabValue]);
 
   return (
     <div className={s.container}>
-      <Tabs.Root value={activeTab} onValueChange={setActiveTab} className={s.tabs}>
+      <Tabs.Root value={activeTabValue} onValueChange={setActiveTabValue} className={s.tabs}>
         <Tabs.List className={s.tabList}>
           {tabs.map((tab) => (
             <Tab
@@ -77,4 +65,4 @@ export default function Settings() {
       </Tabs.Root>
     </div>
   );
-}
+};
