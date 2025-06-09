@@ -3,7 +3,7 @@ import { ChangeEvent, ComponentPropsWithRef, forwardRef, memo, useId, useState }
 import { clsx } from "clsx";
 import { NullableProps } from "common/types/NullableProps/NullableProps";
 import s from "./textField.module.css";
-import { EyeOffOutline, EyeOutline } from "assets/icons";
+import { EyeOffOutline, EyeOutline, Search } from "assets/icons";
 import { Typography } from "common/components/typography/typography";
 import { Slot } from "@radix-ui/react-slot";
 
@@ -25,7 +25,7 @@ export const TextField = memo(
         asChild,
         ...rest
       },
-      ref
+      ref,
     ) => {
       const [passwordVisible, setPasswordVisible] = useState(false);
       const generatedId = useId();
@@ -50,16 +50,26 @@ export const TextField = memo(
               </label>
             </Typography>
           )}
-          <Component
-            id={id}
-            className={clsx(s.textFieldBaseStyles, s[variant], { [s.errorTextField]: isError }, textFieldClassName)}
-            disabled={disabled}
-            type={type === "password" && passwordVisible ? "text" : type}
-            onChange={changeHandler}
-            ref={ref}
-            value={value}
-            {...rest}
-          />
+          <div className={s.searchIconContainer}>
+            {type === "search" && !value && (
+              <Search className={s.searchIcon} width={20} height={20} color={"var(--light-900)"} />
+            )}
+
+            <Component
+              id={id}
+              className={clsx(s.textFieldBaseStyles, s[variant],
+                { [s.isSearch]: type === "search" && !value },
+                { [s.errorTextField]: isError },
+                textFieldClassName
+              )}
+              disabled={disabled}
+              type={type === "password" && passwordVisible ? "text" : type}
+              onChange={changeHandler}
+              ref={ref}
+              value={value}
+              {...rest}
+            />
+          </div>
 
           {type === "password" &&
             (passwordVisible ? (
@@ -68,7 +78,7 @@ export const TextField = memo(
                 width={24}
                 height={24}
                 onClick={handlePasswordVisible}
-                color={"white"}
+                color={"var(--light-100)"}
               />
             ) : (
               <EyeOffOutline
@@ -76,10 +86,9 @@ export const TextField = memo(
                 width={24}
                 height={24}
                 onClick={handlePasswordVisible}
-                color={"white"}
+                color={"var(--light-100)"}
               />
             ))}
-
           {isError && (
             <Typography variant={"regular_14"} asChild>
               <span className={clsx(s.errorMessage, errorClassName)}>{error}</span>
@@ -87,8 +96,8 @@ export const TextField = memo(
           )}
         </div>
       );
-    }
-  )
+    },
+  ),
 );
 
 TextField.displayName = "TextField";
