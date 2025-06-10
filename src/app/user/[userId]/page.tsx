@@ -8,7 +8,8 @@ import React, { useState } from "react";
 import { ROUTES } from "common/constants/routes";
 import { ArrowBackOutline } from "assets/icons";
 import { TabItem } from "common/components/tabsMenu/tabsMenu";
-import { Posts } from "../posts/posts";
+import { UploadedPhotos } from "../uploadedPhotos/uploadedPhotos";
+import s from "./user.module.css";
 
 export default function UserPage() {
   const params = useParams();
@@ -26,34 +27,48 @@ export default function UserPage() {
     }
   };
 
-  const [activeTab, setActiveTab] = useState("posts");
+  const [activeTab, setActiveTab] = useState("uploadedPhotos");
 
   const tabs: TabItem[] = [
-    { value: "posts", title: "Posts", component: <Posts /> },
+    { value: "uploadedPhotos", title: "Uploaded Photos", component: <UploadedPhotos userId={Number(userId)} /> },
     { value: "payments", title: "Payments", component: <div>payments</div> },
     { value: "followers", title: "Followers", component: <div>followers</div> },
     { value: "following", title: "Following", component: <div>following</div> },
   ];
   return (
-    <div>
-      <Button asChild variant={"link"}>
-        <a href="#" onClick={handleBackLinkClick}>
-          <ArrowBackOutline width={24} height={24} />
-          Back to Users List
-        </a>
-      </Button>
-      <div>
-        <Avatar size={"medium"} src={data?.getUser.profile.avatars[0]?.url} />
-        <Typography variant={"h1"}>
-          {data?.getUser.profile.firstName}&nbsp;{data?.getUser.profile.lastName}
+    <div className={s.page}>
+      <a href="#" onClick={handleBackLinkClick} className={s.backLink}>
+        <ArrowBackOutline width={24} height={24} />
+        <Typography asChild variant={"medium_14"}>
+          <span>Back to Users List</span>
         </Typography>
-        <Typography variant={"regular_14"}>{data?.getUser.profile.userName}</Typography>
+      </a>
+      <div className={s.userMainInfo}>
+        <Avatar size={"medium"} src={data?.getUser.profile.avatars[0]?.url} />
+        <div>
+          <Typography variant={"h1"}>
+            {data?.getUser.profile.firstName}&nbsp;{data?.getUser.profile.lastName}
+          </Typography>
+          <Typography variant={"regular_14"} className={s.username}>
+            {data?.getUser.profile.userName}
+          </Typography>
+        </div>
       </div>
-      <div>
-        <Typography>UserId</Typography>
-        <Typography>{data?.getUser.id}</Typography>
-        <Typography>Profile Creation Date</Typography>
-        <Typography>{new Date(data?.getUser.profile.createdAt).toLocaleDateString("ru-RU")}</Typography>
+      <div className={s.userAccountInfo}>
+        <div>
+          <Typography variant={"regular_14"} className={s.infoSubtitle}>
+            UserID
+          </Typography>
+          <Typography variant={"regular_16"}>{data?.getUser.id}</Typography>
+        </div>
+        <div>
+          <Typography variant={"regular_14"} className={s.infoSubtitle}>
+            Profile Creation Date
+          </Typography>
+          <Typography variant={"regular_16"}>
+            {new Date(data?.getUser.profile.createdAt).toLocaleDateString("ru-RU")}
+          </Typography>
+        </div>
       </div>
       <TabsMenu tabs={tabs} activeTabValue={activeTab} setActiveTabValue={setActiveTab} />
     </div>
