@@ -3,7 +3,7 @@
 import styles from "./page.module.css";
 import { useQuery } from "@apollo/client";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { GET_AUTH_STATUS } from "../../apollo/client";
 import { GET_USERS } from "../../apollo/queries/users";
 import { Pagination } from "../../common/components";
@@ -65,8 +65,8 @@ export default function UsersList() {
           </thead>
           <tbody>
             {data?.getUsers.users.map((user: User) => (
-              <>
-                <tr key={user.id}>
+              <Fragment key={user.id}>
+                <tr>
                   <td className={s.cell}>
                     {user.userBan && <Block />}
                     {user.id}
@@ -75,7 +75,7 @@ export default function UsersList() {
                   <td className={s.cell}>{user.email}</td>
                   <td className={s.cell}>{new Date(user.createdAt).toLocaleDateString().replaceAll("/", ".")}</td>
                   <td className={s.cell}>
-                    <ChangeUserStatusDropdown onDeleteClick={() => handleOpenDeleteModal(user.id)} />
+                    <ChangeUserStatusDropdown onDeleteClick={() => handleOpenDeleteModal(user.id)} userId={user.id} />
                   </td>
                 </tr>
                 <DeleteUserModal
@@ -84,7 +84,7 @@ export default function UsersList() {
                   username={user.userName}
                   id={user.id}
                 />
-              </>
+              </Fragment>
             ))}
           </tbody>
         </table>

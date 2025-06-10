@@ -3,12 +3,15 @@ import { useEffect, useRef, useState } from "react";
 import s from "./changeUserStatusDropdown.module.css";
 import { Typography } from "common/components";
 import { PersonRemoveOutline } from "assets/icons";
+import Link from "next/link";
+import { ROUTES } from "common/constants/routes";
 
 type Props = {
   onDeleteClick: () => void;
+  userId: number;
 };
 
-export const ChangeUserStatusDropdown = ({ onDeleteClick }: Props) => {
+export const ChangeUserStatusDropdown = ({ onDeleteClick, userId }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const toggleDropdown = () => setIsOpen((prev) => !prev);
@@ -60,7 +63,9 @@ export const ChangeUserStatusDropdown = ({ onDeleteClick }: Props) => {
             </div>
             <div className={s.iconWithText}>
               <MoreHorizontal width={24} height={24} />
-              <Typography variant="regular_14">More Information</Typography>
+              <Link href={ROUTES.user(userId)}>
+                <Typography variant="regular_14">More Information</Typography>
+              </Link>
             </div>
           </div>
         </div>
