@@ -63,7 +63,7 @@ export const ChangeUserStatusDropdown = ({ onDeleteClick, userId }: Props) => {
             </div>
             <div className={s.iconWithText}>
               <MoreHorizontal width={24} height={24} />
-              <Link href={ROUTES.user(userId)}>
+              <Link href={ROUTES.user(userId)} className={s.link}>
                 <Typography variant="regular_14">More Information</Typography>
               </Link>
             </div>

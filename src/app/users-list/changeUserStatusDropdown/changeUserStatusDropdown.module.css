@@ -24,6 +24,10 @@
   gap: 12px;
 }
 
+.link {
+  color: var(--light-100);
+}
+
 .dropdown {
   position: absolute;
   top: 100%;
