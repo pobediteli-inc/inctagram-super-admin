@@ -1,15 +1,16 @@
 "use client";
 
-import styles from "./page.module.css";
 import s from "./page.module.css";
 import { useQuery } from "@apollo/client";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { GET_AUTH_STATUS } from "apollo/client";
 import { GET_USERS } from "apollo/queries/users";
-import { Pagination, TextField } from "common/components";
+import { Pagination, TextField, DropdownMenu } from "common/components";
 import { Block } from "../../assets/icons";
 import { SortDirectionProps } from "common/types/SortDirectionProps/SortDirectionProps";
+import { DeleteUserModal } from "./modalUsersList/deleteUserModal";
+import { ChangeUserStatusDropdown } from "./changeUserStatusDropdown/changeUserStatusDropdown";
 
 const initialSearchState: SearchUser = {
   searchTerm: "",
@@ -22,6 +23,7 @@ export default function UsersList() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [searchUser, setSearchUser] = useState<SearchUser>(initialSearchState);
+  const [isModalOpen, setIsModalOpen] = useState<{ type: string; userId: number } | null>(null);
 
   const currentPage = Number(searchParams.get("page")) || 1;
   const pageSize = Number(searchParams.get("size")) || 8;
@@ -32,7 +34,7 @@ export default function UsersList() {
     }
   }, [loginStatus, router]);
 
-  const { data, loading, error, refetch } = useQuery(GET_USERS, {
+  const { data } = useQuery(GET_USERS, {
     variables: {
       pageNumber: currentPage,
       pageSize: pageSize,
@@ -51,9 +53,13 @@ export default function UsersList() {
     });
   };
   const handleSearch = (searchTerm: string) => setSearchUser({ ...searchUser, searchTerm });
+  const handleOpenDeleteModal = (userId: number) => {
+    setIsModalOpen({ type: "delete", userId });
+  };
+  const handleClose = () => setIsModalOpen(null);
 
   return (
-    <div className={styles.usersList}>
+    <div className={s.usersList}>
       <div className={s.wrapper}>
         <div className={s.textFieldWrapper}>
           <TextField type={"search"} variant={"standard"} placeholder={"Search"} inputChangeHandler={handleSearch}
@@ -74,12 +80,28 @@ export default function UsersList() {
           </thead>
           <tbody>
           {data?.getUsers.users.map((user: User) => (
-            <tr key={user.id}>
-              <td className={s.cell}>{user.userBan && <Block />}{user.id}</td>
-              <td className={s.cell}>{user.userName}</td>
-              <td className={s.cell}>{user.email}</td>
-              <td className={s.cell}>{new Date(user.createdAt).toLocaleDateString().replaceAll("/", ".")}</td>
-            </tr>
+            <>
+              <tr key={user.id}>
+                <td className={s.cell}>
+                  {user.userBan && <Block />}
+                  {user.id}
+                </td>
+                <td className={s.cell}>{user.userName}</td>
+                <td className={s.cell}>{user.email}</td>
+                <td className={s.cell}>{new Date(user.createdAt).toLocaleDateString().replaceAll("/", ".")}</td>
+                <td className={s.cell}>
+                  <DropdownMenu className={s.dropdown}>
+                    <ChangeUserStatusDropdown onDeleteClick={() => handleOpenDeleteModal(user.id)} />
+                  </DropdownMenu>
+                </td>
+              </tr>
+              <DeleteUserModal
+                onCloseAction={handleClose}
+                open={isModalOpen?.type === "delete" && isModalOpen.userId === user.id}
+                username={user.userName}
+                id={user.id}
+              />
+            </>
           ))}
           </tbody>
         </table>

@@ -1,0 +1,11 @@
+.listWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.iconWithText {
+  cursor: pointer;
+  display: flex;
+  gap: 12px;
+}
