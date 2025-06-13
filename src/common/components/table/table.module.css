@@ -12,6 +12,7 @@
   font-size: 14px;
   line-height: 24px;
   letter-spacing: 0;
+
   &[id='amount']{
     text-align: right;
   }

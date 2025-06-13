@@ -2,7 +2,7 @@ import { GET_POSTS_BY_USER } from "apollo/queries/users";
 import { useQuery } from "@apollo/client";
 import Image from "next/image";
 import s from "./uploadedPhotos.module.css";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Typography } from "common/components";
 import { GetPostsByUserQuery, ImagePost } from "graphql/generated";
 
@@ -76,11 +76,9 @@ export const UploadedPhotos = ({ userId }: Props) => {
     <div className={s.container}>
       {!loading && posts.length === 0 && <Typography variant={"regular_16"}>There&#39;s no photos yet.</Typography>}
       {posts.map((post) => (
-        <>
-          {post.url && (
-            <Image src={post.url} alt={`image ${post.id}`} key={post.id} className={s.image} width={234} height={228} />
-          )}
-        </>
+        <Fragment key={post.id}>
+          {post.url && <Image src={post.url} alt={`image ${post.id}`} className={s.image} width={234} height={228} />}
+        </Fragment>
       ))}
       {loading && <p>Loading...</p>} {/* Show loader */}
     </div>

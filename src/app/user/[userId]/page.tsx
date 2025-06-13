@@ -11,39 +11,31 @@ import { TabItem } from "common/components/tabsMenu/tabsMenu";
 import { UploadedPhotos } from "../uploadedPhotos/uploadedPhotos";
 import s from "./user.module.css";
 import { Payments } from "../payments/payments";
+import Link from "next/link";
 
 export default function UserPage() {
   const params = useParams();
-  const router = useRouter();
   const userId = params.userId;
   const { data } = useQuery(GET_USER, {
     variables: { userId: Number(userId) },
   });
-  const handleBackLinkClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    e.preventDefault();
-    if (document.referrer === "") {
-      router.push(ROUTES.usersList);
-    } else {
-      router.back();
-    }
-  };
 
   const [activeTab, setActiveTab] = useState("uploadedPhotos");
 
   const tabs: TabItem[] = [
     { value: "uploadedPhotos", title: "Uploaded Photos", component: <UploadedPhotos userId={Number(userId)} /> },
-    { value: "payments", title: "Payments", component: <Payments /> },
+    { value: "payments", title: "Payments", component: <Payments userId={Number(userId)} /> },
     { value: "followers", title: "Followers", component: <div>followers</div> },
     { value: "following", title: "Following", component: <div>following</div> },
   ];
   return (
     <div className={s.page}>
-      <a href="#" onClick={handleBackLinkClick} className={s.backLink}>
+      <Link href={ROUTES.usersList} className={s.backLink}>
         <ArrowBackOutline width={24} height={24} />
         <Typography asChild variant={"medium_14"}>
           <span>Back to Users List</span>
         </Typography>
-      </a>
+      </Link>
       <div className={s.userMainInfo}>
         <Avatar size={"medium"} src={data?.getUser.profile.avatars[0]?.url} />
         <div>
