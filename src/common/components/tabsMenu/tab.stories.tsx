@@ -1,10 +1,10 @@
 import * as Tabs from "@radix-ui/react-tabs";
 import { Meta, StoryObj } from "@storybook/react";
-import { Props, RadixTabs } from "./radixTabs";
+import { Props, Tab } from "./tab";
 
-const meta: Meta<typeof RadixTabs> = {
+const meta: Meta<typeof Tab> = {
   title: "Components/RadixTabs",
-  component: RadixTabs,
+  component: Tab,
   argTypes: {
     variant: {
       control: { type: "radio" },
@@ -18,12 +18,12 @@ const meta: Meta<typeof RadixTabs> = {
 
 export default meta;
 
-type Story = StoryObj<typeof RadixTabs>;
+type Story = StoryObj<typeof Tab>;
 
 const Template = (args: Props) => (
   <Tabs.Root defaultValue={args.value}>
     <Tabs.List>
-      <RadixTabs {...args} />
+      <Tab {...args} />
     </Tabs.List>
   </Tabs.Root>
 );

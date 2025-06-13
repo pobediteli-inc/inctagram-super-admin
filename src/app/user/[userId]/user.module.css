@@ -1,0 +1,58 @@
+.page {
+  max-width: 972px;
+  width: 100%;
+}
+
+.backLink {
+  color: var(--light-100);
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 12px;
+  max-width: max-content;
+  margin-bottom: 24px;
+
+  & span {
+    display: inline-block;
+  }
+
+  &:active {
+    transform: none;
+    box-shadow: none;
+    color: var(--primary-700);
+  }
+
+  &:hover {
+    color: var(--primary-100);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--primary-700);
+    color: var(--primary-500);
+  }
+
+  &:disabled {
+    color: var(--primary-900);
+  }
+}
+
+.userMainInfo {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.username {
+  text-decoration: underline;
+}
+
+.userAccountInfo {
+  display: grid;
+  grid-template-columns: 172px 172px;
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.infoSubtitle {
+  color: var(--light-900);
+}

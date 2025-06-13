@@ -1,20 +1,20 @@
-import {gql} from "@apollo/client";
+import { gql } from "@apollo/client";
 
 export const GET_USERS = gql`
   query GetUsers(
-    $pageNumber: Int = 1,
-    $pageSize: Int = 8,
-    $searchTerm: String,
-    $sortBy: String = "createdAt",
-    $sortDirection: SortDirection = desc,
+    $pageNumber: Int = 1
+    $pageSize: Int = 8
+    $searchTerm: String
+    $sortBy: String = "createdAt"
+    $sortDirection: SortDirection = desc
     $statusFilter: UserBlockStatus = ALL
   ) {
     getUsers(
-      pageNumber: $pageNumber,
-      pageSize: $pageSize,
-      searchTerm: $searchTerm,
-      sortBy: $sortBy,
-      sortDirection: $sortDirection,
+      pageNumber: $pageNumber
+      pageSize: $pageSize
+      searchTerm: $searchTerm
+      sortBy: $sortBy
+      sortDirection: $sortDirection
       statusFilter: $statusFilter
     ) {
       pagination {
@@ -48,6 +48,57 @@ export const GET_USERS = gql`
           reason
         }
       }
+    }
+  }
+`;
+
+export const GET_USER = gql`
+  query GetUser($userId: Int!) {
+    getUser(userId: $userId) {
+      id
+      userName
+      email
+      createdAt
+      profile {
+        aboutMe
+        avatars {
+          fileSize
+          height
+          url
+          width
+        }
+        city
+        country
+        createdAt
+        dateOfBirth
+        firstName
+        id
+        lastName
+        region
+        userName
+      }
+      userBan {
+        createdAt
+        reason
+      }
+    }
+  }
+`;
+
+export const GET_POSTS_BY_USER = gql`
+  query GetPostsByUser($userId: Int!, $endCursorId: Int) {
+    getPostsByUser(userId: $userId, endCursorId: $endCursorId) {
+      items {
+        id
+        url
+        createdAt
+        width
+        height
+        fileSize
+      }
+      pageSize
+      pagesCount
+      totalCount
     }
   }
 `;

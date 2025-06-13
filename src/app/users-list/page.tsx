@@ -91,7 +91,7 @@ export default function UsersList() {
                 <td className={s.cell}>{new Date(user.createdAt).toLocaleDateString().replaceAll("/", ".")}</td>
                 <td className={s.cell}>
                   <DropdownMenu className={s.dropdown}>
-                    <ChangeUserStatusDropdown onDeleteClick={() => handleOpenDeleteModal(user.id)} />
+                    <ChangeUserStatusDropdown onDeleteClick={() => handleOpenDeleteModal(user.id)}  userId={user.id} />
                   </DropdownMenu>
                 </td>
               </tr>
