@@ -8,8 +8,10 @@ import {Controller, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {z} from "zod";
 import {useMutation} from "@apollo/client";
-import {LOGIN_ADMIN} from "../../apollo/mutations/admin";
-import {updateLoginState} from "../../apollo/client";
+import {LOGIN_ADMIN} from "apollo/mutations/admin";
+import {updateLoginState} from "apollo/client";
+import { useAppDispatch } from "common/hooks";
+import { setStatus } from "store/services/slices";
 
 const signInSchema = z
   .object({
@@ -32,9 +34,8 @@ export default function SingInAdmin() {
     message: string;
     open: boolean;
   } | null>(null);
-
   const router = useRouter();
-
+  const dispatch = useAppDispatch();
   const [loginAdmin] = useMutation(LOGIN_ADMIN)
 
   const {
@@ -57,13 +58,12 @@ export default function SingInAdmin() {
 
       if (res.data.loginAdmin.logged) {
         updateLoginState(true);
-
-        setToast({ type: "success", message: "Logged in successfully!", open: true });
+        dispatch(setStatus({ status: "success", message: "Successfully logged in." }));
         reset()
         router.replace("/users-list")
       } else {
         reset()
-        setToast({ type: "error", message: "You are not logged in as an administrator. Check the data you entered and try again.", open: true });
+        dispatch(setStatus({ status: "error", message: "You are not logged in as an administrator. Check the data you entered and try again." }));
       }
     } catch (error: any) {
       if (error.data) {

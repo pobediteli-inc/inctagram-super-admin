@@ -34,3 +34,9 @@
   flex-shrink: 0;
   gap: 25px;
 }
+
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+}
