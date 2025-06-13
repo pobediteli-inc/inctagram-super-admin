@@ -10,31 +10,34 @@ import { generatePageNumbers } from "./methods/generatePageNumbers";
 
 export type PaginationProps = {
   totalPages: number;
+  className?: string;
 };
 
-export const Pagination = ({ totalPages }: PaginationProps) => {
+export const Pagination = ({ totalPages, className }: PaginationProps) => {
   const router = useRouter();
-
   const searchParams = useSearchParams();
+
   const currentPage = Number(searchParams.get("page")) || 1;
   const pageSize = Number(searchParams.get("size")) || 10;
-  const lastPage = Math.ceil(totalPages / pageSize);
 
-  const pageNumbers = generatePageNumbers({ currentPage, pageSize, totalPages });
+  const pageNumbers = generatePageNumbers({ currentPage, totalPages });
 
   const handlePageChange = (page: number) => {
-    router.push(`?page=${page}&size=${pageSize}`);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", page.toString());
+    params.set("size", pageSize.toString());
+    router.push(`?${params.toString()}`);
   };
 
-  const onPageSizeChange = (size: number = pageSize) => {
-    const params = new URLSearchParams(searchParams);
+  const onPageSizeChange = (size: number) => {
+    const params = new URLSearchParams(searchParams.toString());
     params.set("page", "1");
     params.set("size", size.toString());
-    router.push(`?${params}`);
+    router.push(`?${params.toString()}`);
   };
 
   return (
-    <div className={s.paginationContainer}>
+    <div className={clsx(className, s.paginationContainer)}>
       <button
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
@@ -61,13 +64,13 @@ export const Pagination = ({ totalPages }: PaginationProps) => {
 
       <button
         onClick={() => handlePageChange(currentPage + 1)}
-        disabled={currentPage === lastPage}
+        disabled={currentPage === totalPages}
         className={clsx(s.navigationButton, { [s.disabled]: currentPage === totalPages })}
       >
         <SvgArrowIosForward
           width={16}
           height={16}
-          color={currentPage === lastPage ? "var(--dark-100)" : "var(--light-100)"}
+          color={currentPage === totalPages ? "var(--dark-100)" : "var(--light-100)"}
         />
       </button>
 
