@@ -13,6 +13,7 @@ import s from "./user.module.css";
 import { Payments } from "../payments/payments";
 import Link from "next/link";
 import { Followers } from "../followers/followers";
+import { Following } from "../following/following";
 
 export default function UserPage() {
   const params = useParams();
@@ -27,7 +28,7 @@ export default function UserPage() {
     { value: "uploadedPhotos", title: "Uploaded Photos", component: <UploadedPhotos userId={userId} /> },
     { value: "payments", title: "Payments", component: <Payments userId={userId} /> },
     { value: "followers", title: "Followers", component: <Followers userId={userId} /> },
-    { value: "following", title: "Following", component: <div>following</div> },
+    { value: "following", title: "Following", component: <Following userId={userId} /> },
   ];
   return (
     <div className={s.page}>

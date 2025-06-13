@@ -177,3 +177,34 @@ export const GET_FOLLOWERS = gql`
     }
   }
 `;
+
+export const GET_FOLLOWING = gql`
+  query GetFollowing(
+    $pageNumber: Int = 1
+    $pageSize: Int = 10
+    $sortBy: String = "createdAt"
+    $sortDirection: SortDirection = desc
+    $userId: Int!
+  ) {
+    getFollowing(
+      pageNumber: $pageNumber
+      pageSize: $pageSize
+      sortBy: $sortBy
+      sortDirection: $sortDirection
+      userId: $userId
+    ) {
+      items {
+        createdAt
+        firstName
+        id
+        lastName
+        userId
+        userName
+      }
+      page
+      pageSize
+      pagesCount
+      totalCount
+    }
+  }
+`;
