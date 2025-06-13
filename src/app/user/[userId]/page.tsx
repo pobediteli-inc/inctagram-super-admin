@@ -3,13 +3,14 @@
 import { useParams, useRouter } from "next/navigation";
 import { useQuery } from "@apollo/client";
 import { GET_USER } from "apollo/queries/users";
-import { Avatar, Button, TabsMenu, Typography } from "common/components";
+import { Avatar, TabsMenu, Typography } from "common/components";
 import React, { useState } from "react";
 import { ROUTES } from "common/constants/routes";
 import { ArrowBackOutline } from "assets/icons";
 import { TabItem } from "common/components/tabsMenu/tabsMenu";
 import { UploadedPhotos } from "../uploadedPhotos/uploadedPhotos";
 import s from "./user.module.css";
+import { Payments } from "../payments/payments";
 
 export default function UserPage() {
   const params = useParams();
@@ -31,7 +32,7 @@ export default function UserPage() {
 
   const tabs: TabItem[] = [
     { value: "uploadedPhotos", title: "Uploaded Photos", component: <UploadedPhotos userId={Number(userId)} /> },
-    { value: "payments", title: "Payments", component: <div>payments</div> },
+    { value: "payments", title: "Payments", component: <Payments /> },
     { value: "followers", title: "Followers", component: <div>followers</div> },
     { value: "following", title: "Following", component: <div>following</div> },
   ];
