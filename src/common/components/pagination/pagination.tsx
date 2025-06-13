@@ -7,6 +7,7 @@ import SvgArrowIosForward from "assets/icons/ArrowIosForward";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 import { generatePageNumbers } from "./methods/generatePageNumbers";
+import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "../../constants/paginationConstants";
 
 export type PaginationProps = {
   totalPages: number;
@@ -17,8 +18,8 @@ export const Pagination = ({ totalPages, className }: PaginationProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const currentPage = Number(searchParams.get("page")) || 1;
-  const pageSize = Number(searchParams.get("size")) || 10;
+  const currentPage = Number(searchParams.get("page")) || DEFAULT_PAGE;
+  const pageSize = Number(searchParams.get("size")) || DEFAULT_PAGE_SIZE;
 
   const pageNumbers = generatePageNumbers({ currentPage, totalPages });
 
@@ -31,7 +32,7 @@ export const Pagination = ({ totalPages, className }: PaginationProps) => {
 
   const onPageSizeChange = (size: number) => {
     const params = new URLSearchParams(searchParams.toString());
-    params.set("page", "1");
+    params.set("page", DEFAULT_PAGE.toString());
     params.set("size", size.toString());
     router.push(`?${params.toString()}`);
   };

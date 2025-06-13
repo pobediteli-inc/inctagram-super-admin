@@ -6,6 +6,7 @@ import { getCurrencySymbol, getPaymentMethodDisplayName, getSubscriptionDuration
 import { Pagination } from "common/components";
 import { useSearchParams } from "next/navigation";
 import s from "./payments.module.css";
+import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "common/constants/paginationConstants";
 
 type Props = {
   userId: number;
@@ -14,8 +15,8 @@ type Props = {
 export const Payments = ({ userId }: Props) => {
   const searchParams = useSearchParams();
 
-  const currentPage = Number(searchParams.get("page")) || 1;
-  const pageSize = Number(searchParams.get("size")) || 10;
+  const currentPage = Number(searchParams.get("page")) || DEFAULT_PAGE;
+  const pageSize = Number(searchParams.get("size")) || DEFAULT_PAGE_SIZE;
 
   const { data } = useQuery<GetPaymentsByUserQuery>(GET_PAYMENTS_BY_USER, {
     variables: {

@@ -11,6 +11,9 @@ import { Block } from "../../assets/icons";
 import { SortDirectionProps } from "common/types/SortDirectionProps/SortDirectionProps";
 import { DeleteUserModal } from "./modalUsersList/deleteUserModal";
 import { ChangeUserStatusDropdown } from "./changeUserStatusDropdown/changeUserStatusDropdown";
+import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "common/constants/paginationConstants";
+import { ROUTES } from "common/constants/routes";
+import { Table, TableBody, TableCell, TableHeadCell, TableHeader, TableRow } from "common/components/table/table";
 
 const initialSearchState: SearchUser = {
   searchTerm: "",
@@ -25,12 +28,12 @@ export default function UsersList() {
   const [searchUser, setSearchUser] = useState<SearchUser>(initialSearchState);
   const [isModalOpen, setIsModalOpen] = useState<{ type: string; userId: number } | null>(null);
 
-  const currentPage = Number(searchParams.get("page")) || 1;
-  const pageSize = Number(searchParams.get("size")) || 8;
+  const currentPage = Number(searchParams.get("page")) || DEFAULT_PAGE;
+  const pageSize = Number(searchParams.get("size")) || DEFAULT_PAGE_SIZE;
 
   useEffect(() => {
     if (!isLoggedIn) {
-      router.replace("/sign-in-admin");
+      router.replace(ROUTES.signInAdmin);
     }
   }, [isLoggedIn, router]);
 
@@ -49,7 +52,7 @@ export default function UsersList() {
     setSearchUser({
       ...searchUser,
       sortBy: sortField,
-      sortDirection: searchUser.sortBy === sortField ? (searchUser.sortDirection === "asc" ? "desc" : "asc") : "desc",
+      sortDirection: searchUser.sortBy === sortField ? (searchUser.sortDirection === "asc" ? "desc" : "asc") : "asc",
     });
   };
   const handleSearch = (searchTerm: string) => setSearchUser({ ...searchUser, searchTerm });
@@ -70,36 +73,37 @@ export default function UsersList() {
             value={searchUser.searchTerm}
           />
         </div>
-        <table className={s.table}>
-          <thead>
-            <tr>
-              <th className={s.cell}>User ID</th>
-              <th className={s.cell} onClick={() => handleSort("userName")}>
+        <Table className={s.table}>
+          <TableHeader>
+            <TableRow>
+              <TableHeadCell>User ID</TableHeadCell>
+              <TableHeadCell onClick={() => handleSort("userName")}>
                 Username {searchUser.sortBy === "userName" && (searchUser.sortDirection === "asc" ? "↑" : "↓")}
-              </th>
-              <th className={s.cell}>Profile Link</th>
-              <th className={s.cell} onClick={() => handleSort("createdAt")}>
+              </TableHeadCell>
+              <TableHeadCell>Profile Link</TableHeadCell>
+              <TableHeadCell onClick={() => handleSort("createdAt")}>
                 Date added {searchUser.sortBy === "createdAt" && (searchUser.sortDirection === "asc" ? "↑" : "↓")}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
+              </TableHeadCell>
+              <TableHeadCell></TableHeadCell>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {data?.getUsers.users.map((user: User) => (
               <>
-                <tr key={user.id}>
-                  <td className={s.cell}>
+                <TableRow key={user.id}>
+                  <TableCell>
                     {user.userBan && <Block />}
                     {user.id}
-                  </td>
-                  <td className={s.cell}>{user.userName}</td>
-                  <td className={s.cell}>{user.email}</td>
-                  <td className={s.cell}>{new Date(user.createdAt).toLocaleDateString().replaceAll("/", ".")}</td>
-                  <td className={s.cell}>
+                  </TableCell>
+                  <TableCell>{user.userName}</TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell>{new Date(user.createdAt).toLocaleDateString().replaceAll("/", ".")}</TableCell>
+                  <TableCell>
                     <DropdownMenu className={s.dropdown}>
                       <ChangeUserStatusDropdown onDeleteClick={() => handleOpenDeleteModal(user.id)} userId={user.id} />
                     </DropdownMenu>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
                 <DeleteUserModal
                   onCloseAction={handleClose}
                   open={isModalOpen?.type === "delete" && isModalOpen.userId === user.id}
@@ -108,8 +112,8 @@ export default function UsersList() {
                 />
               </>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
 
         <Pagination totalPages={data?.getUsers?.pagination?.pagesCount} />
       </div>

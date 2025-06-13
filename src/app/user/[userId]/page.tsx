@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useQuery } from "@apollo/client";
 import { GET_USER } from "apollo/queries/users";
 import { Avatar, TabsMenu, Typography } from "common/components";
@@ -14,15 +14,31 @@ import { Payments } from "../payments/payments";
 import Link from "next/link";
 import { Followers } from "../followers/followers";
 import { Following } from "../following/following";
+import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "common/constants/paginationConstants";
 
 export default function UserPage() {
   const params = useParams();
+  const router = useRouter();
   const userId = Number(params.userId);
   const { data } = useQuery(GET_USER, {
     variables: { userId },
   });
 
   const [activeTab, setActiveTab] = useState("uploadedPhotos");
+
+  const handleTabChange = (tabValue: string) => {
+    setActiveTab(tabValue);
+
+    if (tabValue === "uploadedPhotos") {
+      router.push(ROUTES.user(userId));
+    } else {
+      const newQuery = new URLSearchParams();
+      newQuery.set("page", DEFAULT_PAGE.toString());
+      newQuery.set("size", DEFAULT_PAGE_SIZE.toString());
+
+      router.push(`${ROUTES.user(userId)}?${newQuery.toString()}`);
+    }
+  };
 
   const tabs: TabItem[] = [
     { value: "uploadedPhotos", title: "Uploaded Photos", component: <UploadedPhotos userId={userId} /> },
@@ -65,7 +81,7 @@ export default function UserPage() {
           </Typography>
         </div>
       </div>
-      <TabsMenu tabs={tabs} activeTabValue={activeTab} setActiveTabValue={setActiveTab} />
+      <TabsMenu tabs={tabs} activeTabValue={activeTab} setActiveTabValue={handleTabChange} />
     </div>
   );
 }

@@ -7,14 +7,15 @@ import { Pagination } from "common/components";
 import s from "./followers.module.css";
 import Link from "next/link";
 import { ROUTES } from "common/constants/routes";
+import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "common/constants/paginationConstants";
 
 type Props = { userId: number };
 
 export const Followers = ({ userId }: Props) => {
   const searchParams = useSearchParams();
 
-  const currentPage = Number(searchParams.get("page")) || 1;
-  const pageSize = Number(searchParams.get("size")) || 10;
+  const currentPage = Number(searchParams.get("page")) || DEFAULT_PAGE;
+  const pageSize = Number(searchParams.get("size")) || DEFAULT_PAGE_SIZE;
 
   const { data } = useQuery<{ getFollowers: FollowPaginationModel }>(GET_FOLLOWERS, {
     variables: {
