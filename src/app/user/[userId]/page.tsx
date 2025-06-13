@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useQuery } from "@apollo/client";
 import { GET_USER } from "apollo/queries/users";
 import { Avatar, TabsMenu, Typography } from "common/components";
@@ -12,20 +12,21 @@ import { UploadedPhotos } from "../uploadedPhotos/uploadedPhotos";
 import s from "./user.module.css";
 import { Payments } from "../payments/payments";
 import Link from "next/link";
+import { Followers } from "../followers/followers";
 
 export default function UserPage() {
   const params = useParams();
-  const userId = params.userId;
+  const userId = Number(params.userId);
   const { data } = useQuery(GET_USER, {
-    variables: { userId: Number(userId) },
+    variables: { userId },
   });
 
   const [activeTab, setActiveTab] = useState("uploadedPhotos");
 
   const tabs: TabItem[] = [
-    { value: "uploadedPhotos", title: "Uploaded Photos", component: <UploadedPhotos userId={Number(userId)} /> },
-    { value: "payments", title: "Payments", component: <Payments userId={Number(userId)} /> },
-    { value: "followers", title: "Followers", component: <div>followers</div> },
+    { value: "uploadedPhotos", title: "Uploaded Photos", component: <UploadedPhotos userId={userId} /> },
+    { value: "payments", title: "Payments", component: <Payments userId={userId} /> },
+    { value: "followers", title: "Followers", component: <Followers userId={userId} /> },
     { value: "following", title: "Following", component: <div>following</div> },
   ];
   return (

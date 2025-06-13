@@ -20,12 +20,14 @@ export const Payments = ({ userId }: Props) => {
   const { data } = useQuery<GetPaymentsByUserQuery>(GET_PAYMENTS_BY_USER, {
     variables: {
       pageNumber: currentPage,
-      pageSize: pageSize,
+      pageSize,
       sortBy: "createdAt",
       sortDirection: "desc",
       userId,
     },
   });
+
+  if (data?.getPaymentsByUser.items.length === 0) return <div>There&#39;s no payments yet.</div>;
 
   return (
     <>

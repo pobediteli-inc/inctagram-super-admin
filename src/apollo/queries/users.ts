@@ -146,3 +146,34 @@ export const GET_PAYMENTS_BY_USER = gql`
     }
   }
 `;
+
+export const GET_FOLLOWERS = gql`
+  query GetFollowers(
+    $pageNumber: Int = 1
+    $pageSize: Int = 10
+    $sortBy: String = "createdAt"
+    $sortDirection: SortDirection = desc
+    $userId: Int!
+  ) {
+    getFollowers(
+      pageNumber: $pageNumber
+      pageSize: $pageSize
+      sortBy: $sortBy
+      sortDirection: $sortDirection
+      userId: $userId
+    ) {
+      items {
+        createdAt
+        firstName
+        id
+        lastName
+        userId
+        userName
+      }
+      page
+      pageSize
+      pagesCount
+      totalCount
+    }
+  }
+`;
