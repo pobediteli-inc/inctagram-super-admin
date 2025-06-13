@@ -1,0 +1,35 @@
+.table {
+  border-spacing: 0;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.tHeadCell {
+  background-color: var(--dark-500);
+  padding: 12px 24px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 24px;
+  letter-spacing: 0;
+
+  &[id='amount']{
+    text-align: right;
+  }
+}
+
+.tRow{
+  border: 1px solid var(--dark-500);
+}
+
+.tCell {
+  padding: 12px 24px;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 24px;
+  letter-spacing: 0;
+
+  &[id='amount']{
+    text-align: right;
+  }
+}
