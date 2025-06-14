@@ -3,46 +3,57 @@
 import { useParams, useRouter } from "next/navigation";
 import { useQuery } from "@apollo/client";
 import { GET_USER } from "apollo/queries/users";
-import { Avatar, Button, TabsMenu, Typography } from "common/components";
+import { Avatar, TabsMenu, Typography } from "common/components";
 import React, { useState } from "react";
 import { ROUTES } from "common/constants/routes";
 import { ArrowBackOutline } from "assets/icons";
 import { TabItem } from "common/components/tabsMenu/tabsMenu";
 import { UploadedPhotos } from "../uploadedPhotos/uploadedPhotos";
 import s from "./user.module.css";
+import { Payments } from "../payments/payments";
+import Link from "next/link";
+import { Followers } from "../followers/followers";
+import { Following } from "../following/following";
+import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "common/constants/paginationConstants";
 
 export default function UserPage() {
   const params = useParams();
   const router = useRouter();
-  const userId = params.userId;
+  const userId = Number(params.userId);
   const { data } = useQuery(GET_USER, {
-    variables: { userId: Number(userId) },
+    variables: { userId },
   });
-  const handleBackLinkClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    e.preventDefault();
-    if (document.referrer === "") {
-      router.push(ROUTES.usersList);
-    } else {
-      router.back();
-    }
-  };
 
   const [activeTab, setActiveTab] = useState("uploadedPhotos");
 
+  const handleTabChange = (tabValue: string) => {
+    setActiveTab(tabValue);
+
+    if (tabValue === "uploadedPhotos") {
+      router.push(ROUTES.user(userId));
+    } else {
+      const newQuery = new URLSearchParams();
+      newQuery.set("page", DEFAULT_PAGE.toString());
+      newQuery.set("size", DEFAULT_PAGE_SIZE.toString());
+
+      router.push(`${ROUTES.user(userId)}?${newQuery.toString()}`);
+    }
+  };
+
   const tabs: TabItem[] = [
-    { value: "uploadedPhotos", title: "Uploaded Photos", component: <UploadedPhotos userId={Number(userId)} /> },
-    { value: "payments", title: "Payments", component: <div>payments</div> },
-    { value: "followers", title: "Followers", component: <div>followers</div> },
-    { value: "following", title: "Following", component: <div>following</div> },
+    { value: "uploadedPhotos", title: "Uploaded Photos", component: <UploadedPhotos userId={userId} /> },
+    { value: "payments", title: "Payments", component: <Payments userId={userId} /> },
+    { value: "followers", title: "Followers", component: <Followers userId={userId} /> },
+    { value: "following", title: "Following", component: <Following userId={userId} /> },
   ];
   return (
     <div className={s.page}>
-      <a href="#" onClick={handleBackLinkClick} className={s.backLink}>
+      <Link href={ROUTES.usersList} className={s.backLink}>
         <ArrowBackOutline width={24} height={24} />
         <Typography asChild variant={"medium_14"}>
           <span>Back to Users List</span>
         </Typography>
-      </a>
+      </Link>
       <div className={s.userMainInfo}>
         <Avatar size={"medium"} src={data?.getUser.profile.avatars[0]?.url} />
         <div>
@@ -70,7 +81,7 @@ export default function UserPage() {
           </Typography>
         </div>
       </div>
-      <TabsMenu tabs={tabs} activeTabValue={activeTab} setActiveTabValue={setActiveTab} />
+      <TabsMenu tabs={tabs} activeTabValue={activeTab} setActiveTabValue={handleTabChange} />
     </div>
   );
 }

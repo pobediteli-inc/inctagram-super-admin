@@ -102,3 +102,109 @@ export const GET_POSTS_BY_USER = gql`
     }
   }
 `;
+
+export const GET_PAYMENTS_BY_USER = gql`
+  query GetPaymentsByUser(
+    $pageNumber: Int = 1
+    $pageSize: Int = 10
+    $sortBy: String = "createdAt"
+    $sortDirection: SortDirection = desc
+    $userId: Int!
+  ) {
+    getPaymentsByUser(
+      pageNumber: $pageNumber
+      pageSize: $pageSize
+      sortBy: $sortBy
+      sortDirection: $sortDirection
+      userId: $userId
+    ) {
+      items {
+        businessAccountId
+        dateOfPayment
+        endDate
+        id
+        paymentType
+        price
+        startDate
+        status
+        type
+        payments {
+          amount
+          createdAt
+          currency
+          endDate
+          id
+          paymentMethod
+          type
+          userId
+        }
+      }
+      page
+      pageSize
+      pagesCount
+      totalCount
+    }
+  }
+`;
+
+export const GET_FOLLOWERS = gql`
+  query GetFollowers(
+    $pageNumber: Int = 1
+    $pageSize: Int = 10
+    $sortBy: String = "createdAt"
+    $sortDirection: SortDirection = desc
+    $userId: Int!
+  ) {
+    getFollowers(
+      pageNumber: $pageNumber
+      pageSize: $pageSize
+      sortBy: $sortBy
+      sortDirection: $sortDirection
+      userId: $userId
+    ) {
+      items {
+        createdAt
+        firstName
+        id
+        lastName
+        userId
+        userName
+      }
+      page
+      pageSize
+      pagesCount
+      totalCount
+    }
+  }
+`;
+
+export const GET_FOLLOWING = gql`
+  query GetFollowing(
+    $pageNumber: Int = 1
+    $pageSize: Int = 10
+    $sortBy: String = "createdAt"
+    $sortDirection: SortDirection = desc
+    $userId: Int!
+  ) {
+    getFollowing(
+      pageNumber: $pageNumber
+      pageSize: $pageSize
+      sortBy: $sortBy
+      sortDirection: $sortDirection
+      userId: $userId
+    ) {
+      items {
+        createdAt
+        firstName
+        id
+        lastName
+        userId
+        userName
+      }
+      page
+      pageSize
+      pagesCount
+      totalCount
+    }
+  }
+`;

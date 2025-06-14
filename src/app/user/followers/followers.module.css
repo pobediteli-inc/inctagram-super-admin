@@ -1,0 +1,8 @@
+.link {
+  color: var(--light-100);
+  text-decoration: underline;
+}
+
+.pagination {
+  margin-top: 36px;
+}
