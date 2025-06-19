@@ -36,7 +36,7 @@ export const BanUserModal = ({ isOpen, userId, onClose, userName }: Props) => {
     } else if (selectValue === adPlacement) {
       setReason(adPlacement);
     }
-  }, [selectValue]);
+  }, [selectValue, adPlacement, badBehavior]);
 
   const selectItems: SelectItemsProps[] = [
     { value: badBehavior, label: badBehavior },
