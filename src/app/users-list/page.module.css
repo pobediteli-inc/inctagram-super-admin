@@ -31,3 +31,11 @@
   gap: 12px;
   height: 56px;
 }
+
+.skeletonRow {
+  padding: 0 !important;
+}
+
+.skeletonCell {
+  padding: 0 !important;
+}
