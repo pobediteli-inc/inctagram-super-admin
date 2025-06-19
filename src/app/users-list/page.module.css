@@ -23,7 +23,6 @@
 .table {
   width: 100%;
   margin: 24px 0 36px;
-  overflow: hidden;
 }
 
 .userBan {
@@ -31,11 +30,4 @@
   align-items: center;
   gap: 12px;
   height: 56px;
-}
-
-.dropdown {
-  &:hover,
-  &:active {
-    color: var(--primary-500);
-  }
 }
