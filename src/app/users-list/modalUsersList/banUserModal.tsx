@@ -5,6 +5,7 @@ import { Select, Typography, ConfirmModal, Textarea } from "common/components";
 import { SelectItemsProps } from "common/types";
 import { useEffect, useState } from "react";
 import s from "./modalUsersList.module.css";
+import { GET_USERS } from "apollo/queries/users";
 
 type Props = {
   isOpen: boolean;
@@ -14,10 +15,13 @@ type Props = {
 };
 
 export const BanUserModal = ({ isOpen, userId, onClose, userName }: Props) => {
-  const [banUser] = useMutation<{ banUser: boolean }, MutationBanUserArgs>(BAN_USER);
+  const [banUser] = useMutation<{ banUser: boolean }, MutationBanUserArgs>(BAN_USER, {
+    refetchQueries: [{ query: GET_USERS }],
+  });
 
   const handleBanUser = async (userId: number, banReason: string) => {
     await banUser({ variables: { userId, banReason } });
+    onClose();
   };
 
   const [selectValue, setSelectValue] = useState<string>("");
