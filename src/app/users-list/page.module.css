@@ -22,25 +22,15 @@
 
 .table {
   width: 100%;
-  border-collapse: collapse;
   margin: 24px 0 36px;
   overflow: hidden;
 }
 
-.table thead tr {
-  background-color: var(--dark-500);
-  font-weight: bold;
-}
-
-.table tbody tr:hover {
-  cursor: pointer;
-}
-
-.cell {
-  border-bottom: 1px solid var(--dark-500);
-  padding: 8px;
-  text-align: left;
-  height: 48px;
+.userBan {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 56px;
 }
 
 .dropdown {

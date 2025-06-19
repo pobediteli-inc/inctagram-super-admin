@@ -91,8 +91,8 @@ export default function UsersList() {
             {data?.getUsers.users.map((user: User) => (
               <>
                 <TableRow key={user.id}>
-                  <TableCell>
-                    {user.userBan && <Block />}
+                  <TableCell className={s.userBan}>
+                    <Block width={24} height={24} color={user.userBan ? "inherit" : "transparent"} />
                     {user.id}
                   </TableCell>
                   <TableCell>{user.userName}</TableCell>
