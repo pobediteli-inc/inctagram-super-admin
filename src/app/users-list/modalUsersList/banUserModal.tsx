@@ -6,6 +6,7 @@ import { SelectItemsProps } from "common/types";
 import { useEffect, useState } from "react";
 import s from "./modalUsersList.module.css";
 import { GET_USERS } from "apollo/queries/users";
+import { BAN_REASONS } from "common/constants/userMutationConstants";
 
 type Props = {
   isOpen: boolean;
@@ -19,6 +20,8 @@ export const BanUserModal = ({ isOpen, userId, onClose, userName }: Props) => {
     refetchQueries: [{ query: GET_USERS }],
   });
 
+  const { badBehavior, adPlacement, another } = BAN_REASONS;
+
   const handleBanUser = async (userId: number, banReason: string) => {
     await banUser({ variables: { userId, banReason } });
     onClose();
@@ -28,17 +31,17 @@ export const BanUserModal = ({ isOpen, userId, onClose, userName }: Props) => {
   const [reason, setReason] = useState<string>("");
 
   useEffect(() => {
-    if (selectValue === "Bad behaviour") {
-      setReason("Bad behaviour");
-    } else if (selectValue === "Advertising placement") {
-      setReason("Advertising placement");
+    if (selectValue === badBehavior) {
+      setReason(badBehavior);
+    } else if (selectValue === adPlacement) {
+      setReason(adPlacement);
     }
   }, [selectValue]);
 
   const selectItems: SelectItemsProps[] = [
-    { value: "Bad behaviour", label: "Bad behaviour" },
-    { value: "Advertising placement", label: "Advertising placement" },
-    { value: "Another reason", label: "Another reason" },
+    { value: badBehavior, label: badBehavior },
+    { value: adPlacement, label: adPlacement },
+    { value: another, label: another },
   ];
 
   return (
@@ -61,7 +64,7 @@ export const BanUserModal = ({ isOpen, userId, onClose, userName }: Props) => {
         onValueChange={setSelectValue}
         className={s.select}
       />
-      {selectValue === "Another reason" && (
+      {selectValue === another && (
         <Textarea title={"Please describe the reason"} onChange={(e) => setReason(e.target.value)} />
       )}
     </ConfirmModal>
