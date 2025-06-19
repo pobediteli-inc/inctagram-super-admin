@@ -1,9 +1,3 @@
-.listWrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
 .iconWithText {
   cursor: pointer;
   display: flex;
@@ -15,18 +9,10 @@
 }
 
 .dropdown {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  width: 180px;
-  max-height: 120px;
-  padding: 12px;
-  background-color: var(--dark-500);
-  border: 1px solid var(--dark-100);
-  border-radius: 2px;
-  z-index: 10;
-  overflow: hidden;
-  animation: fade-in 0.2s ease-in-out;
+  &:hover,
+  &:active {
+    color: var(--primary-500);
+  }
 }
 
 .notificationHeader {

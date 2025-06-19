@@ -22,30 +22,20 @@
 
 .table {
   width: 100%;
-  border-collapse: collapse;
   margin: 24px 0 36px;
-  overflow: hidden;
 }
 
-.table thead tr {
-  background-color: var(--dark-500);
-  font-weight: bold;
+.userBan {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 56px;
 }
 
-.table tbody tr:hover {
-  cursor: pointer;
+.skeletonRow {
+  padding: 0 !important;
 }
 
-.cell {
-  border-bottom: 1px solid var(--dark-500);
-  padding: 8px;
-  text-align: left;
-  height: 48px;
-}
-
-.dropdown {
-  &:hover,
-  &:active {
-    color: var(--primary-500);
-  }
+.skeletonCell {
+  padding: 0 !important;
 }
