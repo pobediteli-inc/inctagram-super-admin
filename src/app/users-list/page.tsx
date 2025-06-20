@@ -37,7 +37,7 @@ export default function UsersList() {
     }
   }, [isLoggedIn, router]);
 
-  const { data } = useQuery(GET_USERS, {
+  const { data, refetch } = useQuery(GET_USERS, {
     variables: {
       pageNumber: currentPage,
       pageSize: pageSize,
@@ -109,6 +109,7 @@ export default function UsersList() {
                   open={isModalOpen?.type === "delete" && isModalOpen.userId === user.id}
                   username={user.userName}
                   id={user.id}
+                  refetch={refetch}
                 />
               </>
             ))}
