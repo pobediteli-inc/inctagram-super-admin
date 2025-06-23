@@ -40,7 +40,7 @@ export default function UsersList() {
     }
   }, [isLoggedIn, router]);
 
-  const { data, networkStatus } = useQuery(GET_USERS, {
+  const { data, refetch, networkStatus } = useQuery(GET_USERS, {
     variables: {
       pageNumber: currentPage,
       pageSize: pageSize,
@@ -129,11 +129,12 @@ export default function UsersList() {
                     </TableCell>
                   </TableRow>
                   <DeleteUserModal
-                    onCloseAction={handleClose}
-                    open={isModalOpen?.type === "delete" && isModalOpen.userId === user.id}
-                    username={user.userName}
-                    id={user.id}
-                  />
+                  onCloseAction={handleClose}
+                  open={isModalOpen?.type === "delete" && isModalOpen.userId === user.id}
+                  username={user.userName}
+                  id={user.id}
+                  refetch={refetch}
+                />
                   <BanUserModal
                     userId={user.id}
                     isOpen={isModalOpen?.type === "ban" && isModalOpen.userId === user.id}

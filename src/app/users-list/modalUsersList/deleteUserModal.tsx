@@ -8,15 +8,17 @@ type Props = {
   open: boolean;
   username: string;
   id: number;
+  refetch: () => void;
 };
 
-export const DeleteUserModal = ({ open, onCloseAction, username, id }: Props) => {
+export const DeleteUserModal = ({ open, onCloseAction, username, id, refetch }: Props) => {
   const [removeUser] = useMutation(REMOVE_USER);
 
   const onDeleteUser = async (id: number) => {
     try {
       await removeUser({ variables: { userId: id } });
       onCloseAction();
+      refetch();
     } catch {
       return null;
     }
