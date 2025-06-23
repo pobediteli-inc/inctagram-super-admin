@@ -1,12 +1,12 @@
 "use client";
 
 import s from "./page.module.css";
-import { useQuery } from "@apollo/client";
+import { NetworkStatus, useQuery } from "@apollo/client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { isLoggedInVar } from "apollo/client";
 import { GET_USERS } from "apollo/queries/users";
-import { DropdownMenu, Pagination, TextField } from "common/components";
+import { Pagination, TextField } from "common/components";
 import { Block } from "../../assets/icons";
 import { SortDirectionProps } from "common/types/SortDirectionProps/SortDirectionProps";
 import { DeleteUserModal } from "./modalUsersList/deleteUserModal";
@@ -14,6 +14,9 @@ import { ChangeUserStatusDropdown } from "./changeUserStatusDropdown/changeUserS
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "common/constants/paginationConstants";
 import { ROUTES } from "common/constants/routes";
 import { Table, TableBody, TableCell, TableHeadCell, TableHeader, TableRow } from "common/components/table/table";
+import { BanUserModal } from "./modalUsersList/banUserModal";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const initialSearchState: SearchUser = {
   searchTerm: "",
@@ -37,7 +40,7 @@ export default function UsersList() {
     }
   }, [isLoggedIn, router]);
 
-  const { data, refetch } = useQuery(GET_USERS, {
+  const { data, refetch, networkStatus } = useQuery(GET_USERS, {
     variables: {
       pageNumber: currentPage,
       pageSize: pageSize,
@@ -46,7 +49,10 @@ export default function UsersList() {
       sortDirection: searchUser.sortDirection,
       statusFilter: "ALL",
     },
+    notifyOnNetworkStatusChange: true,
   });
+
+  const isTableUpdating = networkStatus === NetworkStatus.loading || networkStatus === NetworkStatus.setVariables;
 
   const handleSort = (sortField: SortBy) => {
     setSearchUser({
@@ -58,6 +64,9 @@ export default function UsersList() {
   const handleSearch = (searchTerm: string) => setSearchUser({ ...searchUser, searchTerm });
   const handleOpenDeleteModal = (userId: number) => {
     setIsModalOpen({ type: "delete", userId });
+  };
+  const handleOpenBanModal = (userId: number) => {
+    setIsModalOpen({ type: "ban", userId });
   };
   const handleClose = () => setIsModalOpen(null);
 
@@ -88,34 +97,55 @@ export default function UsersList() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data?.getUsers.users.map((user: User) => (
+            {isTableUpdating ? (
               <>
-                <TableRow key={user.id}>
-                  <TableCell>
-                    {user.userBan && <Block />}
-                    {user.id}
-                  </TableCell>
-                  <TableCell>{user.userName}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>{new Date(user.createdAt).toLocaleDateString().replaceAll("/", ".")}</TableCell>
-                  <TableCell>
-                    <DropdownMenu className={s.dropdown}>
-                      <ChangeUserStatusDropdown onDeleteClick={() => handleOpenDeleteModal(user.id)} userId={user.id} />
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-                <DeleteUserModal
+                {[...Array(pageSize)].map((_, index) => (
+                  <TableRow key={index} className={s.skeletonRow}>
+                    <TableCell colSpan={5} className={s.skeletonCell}>
+                      <SkeletonTheme baseColor={"var(--dark-700)"} highlightColor={"var(--dark-300)"}>
+                        <Skeleton height={50} />
+                      </SkeletonTheme>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </>
+            ) : (
+              data?.getUsers.users.map((user: User) => (
+                <>
+                  <TableRow key={user.id}>
+                    <TableCell className={s.userBan}>
+                      <Block width={24} height={24} color={user.userBan ? "inherit" : "transparent"} />
+                      {user.id}
+                    </TableCell>
+                    <TableCell>{user.userName}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>{new Date(user.createdAt).toLocaleDateString().replaceAll("/", ".")}</TableCell>
+                    <TableCell>
+                      <ChangeUserStatusDropdown
+                        onDeleteClick={handleOpenDeleteModal}
+                        onBanClick={handleOpenBanModal}
+                        userId={user.id}
+                      />
+                    </TableCell>
+                  </TableRow>
+                  <DeleteUserModal
                   onCloseAction={handleClose}
                   open={isModalOpen?.type === "delete" && isModalOpen.userId === user.id}
                   username={user.userName}
                   id={user.id}
                   refetch={refetch}
                 />
-              </>
-            ))}
+                  <BanUserModal
+                    userId={user.id}
+                    isOpen={isModalOpen?.type === "ban" && isModalOpen.userId === user.id}
+                    onClose={handleClose}
+                    userName={user.userName}
+                  />
+                </>
+              ))
+            )}
           </TableBody>
         </Table>
-
         <Pagination totalPages={data?.getUsers?.pagination?.pagesCount} />
       </div>
     </div>

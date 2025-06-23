@@ -34,3 +34,4 @@ export { Avatar } from "./avatar/avatar";
 export { ControlledDatePicker } from "./controlled/controlledDatePicker";
 export { ControlledSelect } from "./controlled/controlledSelect";
 export { TabsMenu } from "./tabsMenu/tabsMenu";
+export { ConfirmModal } from "./modal/confirmModal/confirmModal";
