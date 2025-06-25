@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { isLoggedInVar } from "apollo/client";
 import { GET_USERS } from "apollo/queries/users";
-import { Pagination, TextField } from "common/components";
+import { Pagination, Select, TextField } from "common/components";
 import { Block } from "../../assets/icons";
 import { SortDirectionProps } from "common/types/SortDirectionProps/SortDirectionProps";
 import { DeleteUserModal } from "./modalUsersList/deleteUserModal";
@@ -17,11 +17,13 @@ import { Table, TableBody, TableCell, TableHeadCell, TableHeader, TableRow } fro
 import { BanUserModal } from "./modalUsersList/banUserModal";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { UnbanUserModal } from "./modalUsersList/unbanUserModal";
 
 const initialSearchState: SearchUser = {
   searchTerm: "",
   sortBy: "userName",
   sortDirection: "desc",
+  statusFilter: "NOT_SELECTED",
 };
 
 export default function UsersList() {
@@ -47,7 +49,7 @@ export default function UsersList() {
       searchTerm: searchUser.searchTerm,
       sortBy: searchUser.sortBy,
       sortDirection: searchUser.sortDirection,
-      statusFilter: "ALL",
+      statusFilter: searchUser.statusFilter === "NOT_SELECTED" ? null : searchUser.statusFilter,
     },
     notifyOnNetworkStatusChange: true,
   });
@@ -62,26 +64,55 @@ export default function UsersList() {
     });
   };
   const handleSearch = (searchTerm: string) => setSearchUser({ ...searchUser, searchTerm });
+
   const handleOpenDeleteModal = (userId: number) => {
     setIsModalOpen({ type: "delete", userId });
   };
+
   const handleOpenBanModal = (userId: number) => {
     setIsModalOpen({ type: "ban", userId });
   };
+
+  const handleOpenUnbanModal = (userId: number) => {
+    setIsModalOpen({ type: "unban", userId });
+  };
+
   const handleClose = () => setIsModalOpen(null);
+
+  const statusOptions = [
+    { value: "NOT_SELECTED", label: "Not selected" },
+    { value: "BLOCKED", label: "Blocked" },
+    { value: "NOT_BLOCKED", label: "Not Blocked" },
+  ];
 
   return (
     <div className={s.usersList}>
       <div className={s.wrapper}>
-        <div className={s.textFieldWrapper}>
-          <TextField
-            type={"search"}
-            variant={"standard"}
-            placeholder={"Search"}
-            inputChangeHandler={handleSearch}
-            value={searchUser.searchTerm}
-          />
+        <div className={s.textFieldAndSelectWrapper}>
+          <div className={s.textFieldWrapper}>
+            <TextField
+              type={"search"}
+              variant={"standard"}
+              placeholder={"Search"}
+              inputChangeHandler={handleSearch}
+              value={searchUser.searchTerm}
+            />
+          </div>
+
+          <div className={s.selectWrapper}>
+            <Select
+              className={s.selectStatusFilter}
+              placeholder="Not selected"
+              value={searchUser.statusFilter}
+              onValueChange={(value) =>
+                setSearchUser({ ...searchUser, statusFilter: value as SearchUser["statusFilter"] })
+              }
+              items={statusOptions}
+            />
+          </div>
+
         </div>
+
         <Table className={s.table}>
           <TableHeader>
             <TableRow>
@@ -124,22 +155,31 @@ export default function UsersList() {
                       <ChangeUserStatusDropdown
                         onDeleteClick={handleOpenDeleteModal}
                         onBanClick={handleOpenBanModal}
+                        onUnbanClick={handleOpenUnbanModal}
                         userId={user.id}
+                        isBanned={!!user.userBan}
                       />
                     </TableCell>
                   </TableRow>
                   <DeleteUserModal
-                  onCloseAction={handleClose}
-                  open={isModalOpen?.type === "delete" && isModalOpen.userId === user.id}
-                  username={user.userName}
-                  id={user.id}
-                  refetch={refetch}
-                />
+                    onCloseAction={handleClose}
+                    open={isModalOpen?.type === "delete" && isModalOpen.userId === user.id}
+                    username={user.userName}
+                    id={user.id}
+                    refetch={refetch}
+                  />
                   <BanUserModal
                     userId={user.id}
                     isOpen={isModalOpen?.type === "ban" && isModalOpen.userId === user.id}
                     onClose={handleClose}
                     userName={user.userName}
+                  />
+                  <UnbanUserModal
+                    userId={isModalOpen?.type === "unban" ? isModalOpen.userId : 0}
+                    userName={data?.getUsers.users.find((u: User) => u.id === isModalOpen?.userId)?.userName || ""}
+                    isOpen={isModalOpen?.type === "unban"}
+                    onClose={handleClose}
+                    refetch={refetch}
                   />
                 </>
               ))
@@ -159,9 +199,14 @@ type User = {
   createdAt: Date;
   userBan: null | { createdAt: Date; reason: string };
 };
+
 type SortBy = "userName" | "createdAt";
+
+type UserStatusFilter = "NOT_SELECTED" | "BLOCKED" | "NOT_BLOCKED";
+
 type SearchUser = {
   searchTerm: string;
   sortBy: SortBy;
   sortDirection: SortDirectionProps;
-};
+  statusFilter: UserStatusFilter;
+}
