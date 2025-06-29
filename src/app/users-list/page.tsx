@@ -8,24 +8,18 @@ import { isLoggedInVar } from "apollo/client";
 import { GET_USERS } from "apollo/queries/users";
 import { DropdownMenu, Pagination, TextField } from "common/components";
 import { Block } from "../../assets/icons";
-import { SortDirectionProps } from "common/types/SortDirectionProps/SortDirectionProps";
 import { DeleteUserModal } from "./modalUsersList/deleteUserModal";
 import { ChangeUserStatusDropdown } from "./changeUserStatusDropdown/changeUserStatusDropdown";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "common/constants/paginationConstants";
 import { ROUTES } from "common/constants/routes";
 import { Table, TableBody, TableCell, TableHeadCell, TableHeader, TableRow } from "common/components/table/table";
-
-const initialSearchState: SearchUser = {
-  searchTerm: "",
-  sortBy: "userName",
-  sortDirection: "desc",
-};
+import { useSearch } from "common/hooks/useSearch";
 
 export default function UsersList() {
   const isLoggedIn = isLoggedInVar();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [searchUser, setSearchUser] = useState<SearchUser>(initialSearchState);
+  const {searchUser, handleSearch, handleSort} = useSearch();
   const [isModalOpen, setIsModalOpen] = useState<{ type: string; userId: number } | null>(null);
 
   const currentPage = Number(searchParams.get("page")) || DEFAULT_PAGE;
@@ -48,14 +42,6 @@ export default function UsersList() {
     },
   });
 
-  const handleSort = (sortField: SortBy) => {
-    setSearchUser({
-      ...searchUser,
-      sortBy: sortField,
-      sortDirection: searchUser.sortBy === sortField ? (searchUser.sortDirection === "asc" ? "desc" : "asc") : "asc",
-    });
-  };
-  const handleSearch = (searchTerm: string) => setSearchUser({ ...searchUser, searchTerm });
   const handleOpenDeleteModal = (userId: number) => {
     setIsModalOpen({ type: "delete", userId });
   };
@@ -128,10 +114,4 @@ type User = {
   email: string;
   createdAt: Date;
   userBan: null | { createdAt: Date; reason: string };
-};
-type SortBy = "userName" | "createdAt";
-type SearchUser = {
-  searchTerm: string;
-  sortBy: SortBy;
-  sortDirection: SortDirectionProps;
 };
