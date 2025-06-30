@@ -1,43 +1,32 @@
-import { Block, MoreHorizontal, PersonRemoveOutline } from "assets/icons";
+import { Block, MoreHorizontal } from "assets/icons";
 import s from "./changeUserStatusDropdown.module.css";
-import { DropdownItem, DropdownMenu, Typography } from "common/components";
+import { Typography } from "common/components";
+import { PersonRemoveOutline } from "assets/icons";
 import Link from "next/link";
 import { ROUTES } from "common/constants/routes";
 
 type Props = {
-  onDeleteClick: (userId: number) => void;
-  onBanClick: (userId: number) => void;
-  onUnbanClick: (userId: number) => void;
+  onDeleteClick: () => void;
   userId: number;
-  isBanned: boolean;
 };
 
-export const ChangeUserStatusDropdown = ({ onDeleteClick, onBanClick, onUnbanClick, userId, isBanned }: Props) => {
+export const ChangeUserStatusDropdown = ({ onDeleteClick, userId }: Props) => {
   return (
-    <DropdownMenu className={s.dropdown}>
-      <DropdownItem className={s.iconWithText} onClick={() => onDeleteClick(userId)}>
+    <div className={s.listWrapper}>
+      <div className={s.iconWithText} onClick={onDeleteClick}>
         <PersonRemoveOutline width={24} height={24} />
         <Typography variant="regular_14">Delete User</Typography>
-      </DropdownItem>
-
-      {isBanned ? (
-        <DropdownItem className={s.iconWithText} onClick={() => onUnbanClick(userId)}>
-          <Block width={24} height={24} />
-          <Typography variant="regular_14">Un-ban User</Typography>
-        </DropdownItem>
-      ) : (
-        <DropdownItem className={s.iconWithText} onClick={() => onBanClick(userId)}>
-          <Block width={24} height={24} />
-          <Typography variant="regular_14">Ban in the system</Typography>
-        </DropdownItem>
-      )}
-
-      <DropdownItem className={s.iconWithText}>
+      </div>
+      <div className={s.iconWithText}>
+        <Block width={24} height={24} />
+        <Typography variant="regular_14">Ban in the system</Typography>
+      </div>
+      <div className={s.iconWithText}>
         <MoreHorizontal width={24} height={24} />
-        <Link href={ROUTES.user(userId)} className={s.link}>
-          <Typography variant="regular_14">More Information</Typography>
-        </Link>
-      </DropdownItem>
-    </DropdownMenu>
+              <Link href={ROUTES.user(userId)} className={s.link}>
+                <Typography variant="regular_14">More Information</Typography>
+              </Link>
+      </div>
+    </div>
   );
 };

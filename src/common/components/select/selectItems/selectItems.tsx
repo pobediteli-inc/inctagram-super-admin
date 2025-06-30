@@ -14,21 +14,20 @@ type Props = {
 export const SelectItem = forwardRef<ComponentRef<typeof RadixSelect.Item>, Props>(
   ({ value, children, disabled, className, ...rest }, ref) => {
     return (
-      <RadixSelect.Item
-        className={clsx(stl.itemWrapper, className)}
-        value={value}
-        disabled={disabled}
-        ref={ref}
-        data-hide-when-selected
-        {...rest}
-      >
-        <Typography variant={"regular_16"} color={"light"}>
+      <Typography variant={"regular_16"} color={"light"}>
+        <RadixSelect.Item
+          className={clsx(stl.itemWrapper, className)}
+          value={value}
+          disabled={disabled}
+          ref={ref}
+          {...rest}
+        >
           <RadixSelect.ItemText>{children}</RadixSelect.ItemText>
-        </Typography>
-        <RadixSelect.ItemIndicator className={stl.ItemIndicator}>
-          <CheckIcon />
-        </RadixSelect.ItemIndicator>
-      </RadixSelect.Item>
+          <RadixSelect.ItemIndicator className={stl.ItemIndicator}>
+            <CheckIcon />
+          </RadixSelect.ItemIndicator>
+        </RadixSelect.Item>
+      </Typography>
     );
   }
 );

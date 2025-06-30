@@ -15,39 +15,37 @@
   width: 100%;
 }
 
-.textFieldAndSelectWrapper {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  width: 100%;
-}
-
 .textFieldWrapper {
   max-width: 644px;
   width: 100%;
 }
 
-.selectWrapper {
-  max-width: 234px;
-  width: 100%;
-}
-
 .table {
   width: 100%;
+  border-collapse: collapse;
   margin: 24px 0 36px;
+  overflow: hidden;
 }
 
-.userBan {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  height: 56px;
+.table thead tr {
+  background-color: var(--dark-500);
+  font-weight: bold;
 }
 
-.skeletonRow {
-  padding: 0 !important;
+.table tbody tr:hover {
+  cursor: pointer;
 }
 
-.skeletonCell {
-  padding: 0 !important;
+.cell {
+  border-bottom: 1px solid var(--dark-500);
+  padding: 8px;
+  text-align: left;
+  height: 48px;
+}
+
+.dropdown {
+  &:hover,
+  &:active {
+    color: var(--primary-500);
+  }
 }

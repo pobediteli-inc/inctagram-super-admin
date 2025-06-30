@@ -1,12 +1,12 @@
 "use client";
 
 import s from "./page.module.css";
-import { NetworkStatus, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { isLoggedInVar } from "apollo/client";
 import { GET_USERS } from "apollo/queries/users";
-import { Pagination, Select, TextField } from "common/components";
+import { DropdownMenu, Pagination, TextField } from "common/components";
 import { Block } from "../../assets/icons";
 import { DeleteUserModal } from "./modalUsersList/deleteUserModal";
 import { ChangeUserStatusDropdown } from "./changeUserStatusDropdown/changeUserStatusDropdown";
@@ -14,17 +14,6 @@ import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "common/constants/paginationCons
 import { ROUTES } from "common/constants/routes";
 import { Table, TableBody, TableCell, TableHeadCell, TableHeader, TableRow } from "common/components/table/table";
 import { useSearch } from "common/hooks/useSearch";
-import { BanUserModal } from "./modalUsersList/banUserModal";
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
-import { UnbanUserModal } from "./modalUsersList/unbanUserModal";
-
-const initialSearchState: SearchUser = {
-  searchTerm: "",
-  sortBy: "userName",
-  sortDirection: "desc",
-  statusFilter: "NOT_SELECTED",
-};
 
 export default function UsersList() {
   const isLoggedIn = isLoggedInVar();
@@ -42,77 +31,34 @@ export default function UsersList() {
     }
   }, [isLoggedIn, router]);
 
-  const { data, refetch, networkStatus } = useQuery(GET_USERS, {
+  const { data, refetch } = useQuery(GET_USERS, {
     variables: {
       pageNumber: currentPage,
       pageSize: pageSize,
       searchTerm: searchUser.searchTerm,
       sortBy: searchUser.sortBy,
       sortDirection: searchUser.sortDirection,
-      statusFilter: searchUser.statusFilter === "NOT_SELECTED" ? null : searchUser.statusFilter,
+      statusFilter: "ALL",
     },
-    notifyOnNetworkStatusChange: true,
   });
-
-  const isTableUpdating = networkStatus === NetworkStatus.loading || networkStatus === NetworkStatus.setVariables;
-
-  const handleSort = (sortField: SortBy) => {
-    setSearchUser({
-      ...searchUser,
-      sortBy: sortField,
-      sortDirection: searchUser.sortBy === sortField ? (searchUser.sortDirection === "asc" ? "desc" : "asc") : "asc",
-    });
-  };
-  const handleSearch = (searchTerm: string) => setSearchUser({ ...searchUser, searchTerm });
 
   const handleOpenDeleteModal = (userId: number) => {
     setIsModalOpen({ type: "delete", userId });
   };
-
-  const handleOpenBanModal = (userId: number) => {
-    setIsModalOpen({ type: "ban", userId });
-  };
-
-  const handleOpenUnbanModal = (userId: number) => {
-    setIsModalOpen({ type: "unban", userId });
-  };
-
   const handleClose = () => setIsModalOpen(null);
-
-  const statusOptions = [
-    { value: "NOT_SELECTED", label: "Not selected" },
-    { value: "BLOCKED", label: "Blocked" },
-    { value: "NOT_BLOCKED", label: "Not Blocked" },
-  ];
 
   return (
     <div className={s.usersList}>
       <div className={s.wrapper}>
-        <div className={s.textFieldAndSelectWrapper}>
-          <div className={s.textFieldWrapper}>
-            <TextField
-              type={"search"}
-              variant={"standard"}
-              placeholder={"Search"}
-              inputChangeHandler={handleSearch}
-              value={searchUser.searchTerm}
-            />
-          </div>
-
-          <div className={s.selectWrapper}>
-            <Select
-              className={s.selectStatusFilter}
-              placeholder="Not selected"
-              value={searchUser.statusFilter}
-              onValueChange={(value) =>
-                setSearchUser({ ...searchUser, statusFilter: value as SearchUser["statusFilter"] })
-              }
-              items={statusOptions}
-            />
-          </div>
-
+        <div className={s.textFieldWrapper}>
+          <TextField
+            type={"search"}
+            variant={"standard"}
+            placeholder={"Search"}
+            inputChangeHandler={handleSearch}
+            value={searchUser.searchTerm}
+          />
         </div>
-
         <Table className={s.table}>
           <TableHeader>
             <TableRow>
@@ -128,64 +74,34 @@ export default function UsersList() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {isTableUpdating ? (
+            {data?.getUsers.users.map((user: User) => (
               <>
-                {[...Array(pageSize)].map((_, index) => (
-                  <TableRow key={index} className={s.skeletonRow}>
-                    <TableCell colSpan={5} className={s.skeletonCell}>
-                      <SkeletonTheme baseColor={"var(--dark-700)"} highlightColor={"var(--dark-300)"}>
-                        <Skeleton height={50} />
-                      </SkeletonTheme>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                <TableRow key={user.id}>
+                  <TableCell>
+                    {user.userBan && <Block />}
+                    {user.id}
+                  </TableCell>
+                  <TableCell>{user.userName}</TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell>{new Date(user.createdAt).toLocaleDateString().replaceAll("/", ".")}</TableCell>
+                  <TableCell>
+                    <DropdownMenu className={s.dropdown}>
+                      <ChangeUserStatusDropdown onDeleteClick={() => handleOpenDeleteModal(user.id)} userId={user.id} />
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+                <DeleteUserModal
+                  onCloseAction={handleClose}
+                  open={isModalOpen?.type === "delete" && isModalOpen.userId === user.id}
+                  username={user.userName}
+                  id={user.id}
+                  refetch={refetch}
+                />
               </>
-            ) : (
-              data?.getUsers.users.map((user: User) => (
-                <>
-                  <TableRow key={user.id}>
-                    <TableCell className={s.userBan}>
-                      <Block width={24} height={24} color={user.userBan ? "inherit" : "transparent"} />
-                      {user.id}
-                    </TableCell>
-                    <TableCell>{user.userName}</TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>{new Date(user.createdAt).toLocaleDateString().replaceAll("/", ".")}</TableCell>
-                    <TableCell>
-                      <ChangeUserStatusDropdown
-                        onDeleteClick={handleOpenDeleteModal}
-                        onBanClick={handleOpenBanModal}
-                        onUnbanClick={handleOpenUnbanModal}
-                        userId={user.id}
-                        isBanned={!!user.userBan}
-                      />
-                    </TableCell>
-                  </TableRow>
-                  <DeleteUserModal
-                    onCloseAction={handleClose}
-                    open={isModalOpen?.type === "delete" && isModalOpen.userId === user.id}
-                    username={user.userName}
-                    id={user.id}
-                    refetch={refetch}
-                  />
-                  <BanUserModal
-                    userId={user.id}
-                    isOpen={isModalOpen?.type === "ban" && isModalOpen.userId === user.id}
-                    onClose={handleClose}
-                    userName={user.userName}
-                  />
-                  <UnbanUserModal
-                    userId={isModalOpen?.type === "unban" ? isModalOpen.userId : 0}
-                    userName={data?.getUsers.users.find((u: User) => u.id === isModalOpen?.userId)?.userName || ""}
-                    isOpen={isModalOpen?.type === "unban"}
-                    onClose={handleClose}
-                    refetch={refetch}
-                  />
-                </>
-              ))
-            )}
+            ))}
           </TableBody>
         </Table>
+
         <Pagination totalPages={data?.getUsers?.pagination?.pagesCount} />
       </div>
     </div>
@@ -199,14 +115,3 @@ type User = {
   createdAt: Date;
   userBan: null | { createdAt: Date; reason: string };
 };
-
-type SortBy = "userName" | "createdAt";
-
-type UserStatusFilter = "NOT_SELECTED" | "BLOCKED" | "NOT_BLOCKED";
-
-type SearchUser = {
-  searchTerm: string;
-  sortBy: SortBy;
-  sortDirection: SortDirectionProps;
-  statusFilter: UserStatusFilter;
-}

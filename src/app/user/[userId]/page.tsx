@@ -60,9 +60,9 @@ export default function UserPage() {
           <Typography variant={"h1"}>
             {data?.getUser.profile.firstName}&nbsp;{data?.getUser.profile.lastName}
           </Typography>
-          <Link href={ROUTES.publicUser(userId)} className={s.username}>
-            <Typography variant={"regular_14"}>{data?.getUser.profile.userName}</Typography>
-          </Link>
+          <Typography variant={"regular_14"} className={s.username}>
+            {data?.getUser.profile.userName}
+          </Typography>
         </div>
       </div>
       <div className={s.userAccountInfo}>

@@ -16,7 +16,7 @@ export const Select = forwardRef<ComponentRef<typeof RadixSelect.Trigger>, Selec
     const id = rest.id || generatedId;
 
     return (
-      <div className={clsx(s.selectWrapper, className)}>
+      <div className={s.selectWrapper}>
         {label && (
           <Typography variant={"regular_14"} color={"dark"} asChild>
             <label htmlFor={id} className={s.label}>
@@ -30,7 +30,7 @@ export const Select = forwardRef<ComponentRef<typeof RadixSelect.Trigger>, Selec
           onValueChange={rest.onValueChange}
           disabled={disabled}
         >
-          <RadixSelect.Trigger id={id} className={clsx(s.trigger)} ref={ref}>
+          <RadixSelect.Trigger id={id} className={clsx(s.trigger, className)} ref={ref}>
             <RadixSelect.Value placeholder={placeholder} />
             <RadixSelect.Icon>
               <ChevronDownIcon className={s.iconDown} />

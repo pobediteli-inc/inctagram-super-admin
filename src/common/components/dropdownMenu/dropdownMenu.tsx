@@ -15,7 +15,7 @@ export const DropdownMenu = (props: Props) => {
 
   return (
     <DropdownMenuRadix.Root {...rest}>
-      <DropdownMenuRadix.Trigger className={clsx(props.className, s.trigger)}>
+      <DropdownMenuRadix.Trigger asChild className={clsx(props.className, s.trigger)}>
         {trigger || <MoreHorizontalOutline width={24} height={24} />}
       </DropdownMenuRadix.Trigger>
       <DropdownMenuRadix.Portal>
