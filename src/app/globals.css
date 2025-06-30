@@ -17,8 +17,8 @@ html,
 body {
   font-family: var(--font-family), Arial, sans-serif;
   background-color: var(--dark-700);
-  width: 1280px;
-  margin: 0 auto;
+  width: 100%;
+  margin: 0;
   box-sizing: border-box;
   color: var(--light-100);
   cursor: default;
