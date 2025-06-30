@@ -22,6 +22,10 @@
     background-color: var(--dark-300);
     color: var(--primary-500);
   }
+
+  &[data-state="checked"] {
+    display: none;
+  }
 }
 
 .ItemIndicator {
