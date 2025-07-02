@@ -8,7 +8,7 @@ import { FlagRussia, FlagUnitedKingdom } from "assets/icons";
 import { SelectItemsProps } from "common/types/SelectItemsProps/SelectItemsProps";
 import { LogOut } from "common/components/logOut/logOut";
 import { useAppSelector } from "common/hooks/useAppSelector";
-import { selectIsLoggedIn, selectStatus, setLoggedIn, setStatus } from "store/services/slices";
+import { selectIsLoggedIn, setLoggedIn, setStatus } from "store/services/slices";
 import { useAppDispatch } from "common/hooks/useAppDispatch";
 import { handleErrors } from "common/utils/handleErrors";
 import { useRouter } from "next/navigation";
@@ -18,7 +18,6 @@ import { useReactiveVar } from "@apollo/client";
 export const Header: FC = () => {
   const authStatus = useReactiveVar(isLoggedInVar);
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
-  const { status: isLoading } = useAppSelector(selectStatus);
   const dispatch = useAppDispatch();
   const router = useRouter();
 
@@ -37,7 +36,7 @@ export const Header: FC = () => {
     try {
       if (authStatus) {
         dispatch(setLoggedIn({ isLoggedIn: true }));
-        dispatch(setStatus({ status: null, message: null }))
+        dispatch(setStatus({ status: null, message: null }));
       }
     } catch (error: unknown) {
       handleErrors(error, dispatch);
@@ -63,11 +62,7 @@ export const Header: FC = () => {
         <div className={s.selectButtonsWrapper}>
           <Select defaultValue={"en"} items={selectLanguages} groupLabel={"Languages"} />
           <div className={s.buttonsWrapper}>
-            {isLoading ? (
-              <>
-                <Typography variant={"regular_14"}>Loading...</Typography>
-              </>
-            ) : isLoggedIn ?
+            {isLoggedIn ?
               <LogOut onLogOutAction={handleLogOut} email={"admin@gmail.com"} /> : <></>
             }
           </div>

@@ -208,3 +208,30 @@ export const GET_FOLLOWING = gql`
     }
   }
 `;
+
+export const GET_PAYMENTS = gql`
+  query GetPayments(
+    $pageSize: Int = 10
+    $pageNumber: Int = 1
+    $sortBy: String = "createdAt"
+    $sortDirection: SortDirection = desc
+    $searchTerm: String = ""
+  ) {
+    getPayments(pageSize: $pageSize, pageNumber: $pageNumber, searchTerm: $searchTerm, sortBy: $sortBy, sortDirection: $sortDirection) {
+      items {
+        id
+        userId
+        paymentMethod
+        amount
+        createdAt
+        endDate
+        type
+        userName
+      }
+      pagesCount
+      page
+      pageSize
+      totalCount
+    }
+  }
+`;
