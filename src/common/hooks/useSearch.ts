@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { SortBy } from "apollo/queries/users.types";
-import { SortDirection } from "graphql/generated";
+import { SortDirection, UserBlockStatus } from "graphql/generated";
 
 const initialSearchState: SearchUser = {
   searchTerm: "",
   sortBy: "userName",
   sortDirection: SortDirection.Desc,
+  statusFilter: UserBlockStatus.All
 };
 
 export const useSearch = () => {
@@ -32,4 +33,5 @@ type SearchUser = {
   searchTerm: string;
   sortBy: SortBy;
   sortDirection: SortDirection;
+  statusFilter: UserBlockStatus;
 };
