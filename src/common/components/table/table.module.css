@@ -20,6 +20,7 @@
 
 .tRow{
   border: 1px solid var(--dark-500);
+  height: 100%;
 }
 
 .tCell {
