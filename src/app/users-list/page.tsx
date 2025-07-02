@@ -18,19 +18,13 @@ import { BanUserModal } from "./modalUsersList/banUserModal";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { UnbanUserModal } from "./modalUsersList/unbanUserModal";
-
-const initialSearchState: SearchUser = {
-  searchTerm: "",
-  sortBy: "userName",
-  sortDirection: "desc",
-  statusFilter: "NOT_SELECTED",
-};
+import { UserBlockStatus } from "graphql/generated";
 
 export default function UsersList() {
   const isLoggedIn = isLoggedInVar();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const {searchUser, handleSearch, handleSort} = useSearch();
+  const {searchUser, handleSearch, handleSort, setSearchUser} = useSearch();
   const [isModalOpen, setIsModalOpen] = useState<{ type: string; userId: number } | null>(null);
 
   const currentPage = Number(searchParams.get("page")) || DEFAULT_PAGE;
@@ -49,21 +43,12 @@ export default function UsersList() {
       searchTerm: searchUser.searchTerm,
       sortBy: searchUser.sortBy,
       sortDirection: searchUser.sortDirection,
-      statusFilter: searchUser.statusFilter === "NOT_SELECTED" ? null : searchUser.statusFilter,
+      statusFilter: searchUser.statusFilter === "ALL" ? null : searchUser.statusFilter,
     },
     notifyOnNetworkStatusChange: true,
   });
 
   const isTableUpdating = networkStatus === NetworkStatus.loading || networkStatus === NetworkStatus.setVariables;
-
-  const handleSort = (sortField: SortBy) => {
-    setSearchUser({
-      ...searchUser,
-      sortBy: sortField,
-      sortDirection: searchUser.sortBy === sortField ? (searchUser.sortDirection === "asc" ? "desc" : "asc") : "asc",
-    });
-  };
-  const handleSearch = (searchTerm: string) => setSearchUser({ ...searchUser, searchTerm });
 
   const handleOpenDeleteModal = (userId: number) => {
     setIsModalOpen({ type: "delete", userId });
@@ -80,9 +65,9 @@ export default function UsersList() {
   const handleClose = () => setIsModalOpen(null);
 
   const statusOptions = [
-    { value: "NOT_SELECTED", label: "Not selected" },
-    { value: "BLOCKED", label: "Blocked" },
-    { value: "NOT_BLOCKED", label: "Not Blocked" },
+    { value: UserBlockStatus.All, label: "Not selected" },
+    { value: UserBlockStatus.Blocked, label: "Blocked" },
+    { value: UserBlockStatus.Unblocked, label: "Not Blocked" },
   ];
 
   return (
@@ -98,19 +83,17 @@ export default function UsersList() {
               value={searchUser.searchTerm}
             />
           </div>
-
           <div className={s.selectWrapper}>
             <Select
               className={s.selectStatusFilter}
               placeholder="Not selected"
               value={searchUser.statusFilter}
-              onValueChange={(value) =>
-                setSearchUser({ ...searchUser, statusFilter: value as SearchUser["statusFilter"] })
+              onValueChange={(value: UserBlockStatus) =>
+                setSearchUser({ ...searchUser, statusFilter: value })
               }
               items={statusOptions}
             />
           </div>
-
         </div>
 
         <Table className={s.table}>
@@ -199,14 +182,3 @@ type User = {
   createdAt: Date;
   userBan: null | { createdAt: Date; reason: string };
 };
-
-type SortBy = "userName" | "createdAt";
-
-type UserStatusFilter = "NOT_SELECTED" | "BLOCKED" | "NOT_BLOCKED";
-
-type SearchUser = {
-  searchTerm: string;
-  sortBy: SortBy;
-  sortDirection: SortDirectionProps;
-  statusFilter: UserStatusFilter;
-}
