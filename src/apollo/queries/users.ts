@@ -217,7 +217,13 @@ export const GET_PAYMENTS = gql`
     $sortDirection: SortDirection = desc
     $searchTerm: String = ""
   ) {
-    getPayments(pageSize: $pageSize, pageNumber: $pageNumber, searchTerm: $searchTerm, sortBy: $sortBy, sortDirection: $sortDirection) {
+    getPayments(
+      pageSize: $pageSize
+      pageNumber: $pageNumber
+      searchTerm: $searchTerm
+      sortBy: $sortBy
+      sortDirection: $sortDirection
+    ) {
       items {
         id
         userId
@@ -232,6 +238,49 @@ export const GET_PAYMENTS = gql`
       page
       pageSize
       totalCount
+    }
+  }
+`;
+
+export const GET_POSTS = gql`
+  query GetPosts(
+    $endCursorPostId: Int
+    $searchTerm: String
+    $pageSize: Int = 10
+    $sortBy: String = "createdAt"
+    $sortDirection: SortDirection = desc
+  ) {
+    getPosts(
+      endCursorPostId: $endCursorPostId
+      searchTerm: $searchTerm
+      pageSize: $pageSize
+      sortBy: $sortBy
+      sortDirection: $sortDirection
+    ) {
+      pagesCount
+      pageSize
+      totalCount
+      items {
+        id
+        ownerId
+        description
+        createdAt
+        images {
+          id
+          url
+          width
+          height
+        }
+        postOwner {
+          id
+          userName
+          avatars {
+            url
+            width
+            height
+          }
+        }
+      }
     }
   }
 `;
