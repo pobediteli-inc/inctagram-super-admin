@@ -1,11 +1,10 @@
-import { useMutation } from "@apollo/client";
-import { MutationBanUserArgs } from "graphql/generated";
+import { ApolloQueryResult, useMutation } from "@apollo/client";
+import { GetUsersQuery, MutationBanUserArgs } from "graphql/generated";
 import { BAN_USER } from "apollo/mutations/user";
-import { Select, Typography, ConfirmModal, Textarea } from "common/components";
+import { ConfirmModal, Select, Textarea, Typography } from "common/components";
 import { SelectItemsProps } from "common/types";
 import { useEffect, useState } from "react";
 import s from "./modalUsersList.module.css";
-import { GET_USERS } from "apollo/queries/users";
 import { BAN_REASONS } from "common/constants/userMutationConstants";
 
 type Props = {
@@ -13,17 +12,17 @@ type Props = {
   onClose: () => void;
   userId: number;
   userName: string;
+  refetch: () => Promise<ApolloQueryResult<GetUsersQuery>>;
 };
 
-export const BanUserModal = ({ isOpen, userId, onClose, userName }: Props) => {
-  const [banUser] = useMutation<{ banUser: boolean }, MutationBanUserArgs>(BAN_USER, {
-    refetchQueries: [{ query: GET_USERS }],
-  });
+export const BanUserModal = ({ isOpen, userId, onClose, userName, refetch }: Props) => {
+  const [banUser] = useMutation<{ banUser: boolean }, MutationBanUserArgs>(BAN_USER);
 
   const { badBehavior, adPlacement, another } = BAN_REASONS;
 
   const handleBanUser = async (userId: number, banReason: string) => {
     await banUser({ variables: { userId, banReason } });
+    await refetch();
     onClose();
   };
 
