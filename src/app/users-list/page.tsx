@@ -24,7 +24,7 @@ export default function UsersList() {
   const isLoggedIn = isLoggedInVar();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const {searchUser, handleSearch, handleSort, setSearchUser} = useSearch();
+  const { searchUser, handleSearch, handleSort, setSearchUser } = useSearch();
   const [isModalOpen, setIsModalOpen] = useState<{ type: string; userId: number } | null>(null);
 
   const currentPage = Number(searchParams.get("page")) || DEFAULT_PAGE;
@@ -88,9 +88,7 @@ export default function UsersList() {
               className={s.selectStatusFilter}
               placeholder="Not selected"
               value={searchUser.statusFilter}
-              onValueChange={(value: UserBlockStatus) =>
-                setSearchUser({ ...searchUser, statusFilter: value })
-              }
+              onValueChange={(value: UserBlockStatus) => setSearchUser({ ...searchUser, statusFilter: value })}
               items={statusOptions}
             />
           </div>
@@ -156,6 +154,7 @@ export default function UsersList() {
                     isOpen={isModalOpen?.type === "ban" && isModalOpen.userId === user.id}
                     onClose={handleClose}
                     userName={user.userName}
+                    refetch={refetch}
                   />
                   <UnbanUserModal
                     userId={isModalOpen?.type === "unban" ? isModalOpen.userId : 0}
