@@ -8,12 +8,23 @@ import { ArrowIosDownOutline, ArrowIosUp } from "assets/icons";
 import { useQuery } from "@apollo/client";
 import { GET_PAYMENTS } from "apollo/queries/users";
 import { PaymentsPaginationModel, QueryGetPaymentsArgs } from "graphql/generated";
-import { useSearchParams } from "next/navigation";
+import {useRouter, useSearchParams} from "next/navigation";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "common/constants/paginationConstants";
+import {useEffect} from "react";
+import {ROUTES} from "../../common/constants/routes";
+import {isLoggedInVar} from "../../apollo/client";
 
 export default function PaymentsList() {
   const searchParams = useSearchParams();
   const { searchUser, handleSearch, handleSort } = useSearch();
+  const isLoggedIn = isLoggedInVar();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.replace(ROUTES.signInAdmin);
+    }
+  }, [isLoggedIn, router]);
 
   const pageNumber = Number(searchParams.get("page")) || DEFAULT_PAGE;
   const pageSize = Number(searchParams.get("size")) || DEFAULT_PAGE_SIZE;
