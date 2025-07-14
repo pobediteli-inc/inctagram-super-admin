@@ -9,9 +9,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Posts } from "./posts/posts";
 import { POST_ADDED } from "apollo/subscriptions/posts";
 import { Post } from "graphql/generated";
-import {isLoggedInVar} from "../../apollo/client";
-import {useRouter} from "next/navigation";
-import {ROUTES} from "../../common/constants/routes";
+import { isLoggedInVar } from "../../apollo/client";
+import { useRouter } from "next/navigation";
+import { ROUTES } from "../../common/constants/routes";
 
 export default function PostsList() {
   const { searchUser, handleSearch } = useSearch();

@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
 import styles from "./page.module.css";
-import {useEffect} from "react";
-import {ROUTES} from "../../common/constants/routes";
-import {isLoggedInVar} from "../../apollo/client";
-import {useRouter} from "next/navigation";
+import { useEffect } from "react";
+import { ROUTES } from "../../common/constants/routes";
+import { isLoggedInVar } from "../../apollo/client";
+import { useRouter } from "next/navigation";
 
 export default function Statistics() {
   const isLoggedIn = isLoggedInVar();
