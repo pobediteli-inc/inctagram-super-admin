@@ -8,12 +8,23 @@ import { ArrowIosDownOutline, ArrowIosUp } from "assets/icons";
 import { useQuery } from "@apollo/client";
 import { GET_PAYMENTS } from "apollo/queries/users";
 import { PaymentsPaginationModel, QueryGetPaymentsArgs } from "graphql/generated";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "common/constants/paginationConstants";
+import { useEffect } from "react";
+import { ROUTES } from "../../common/constants/routes";
+import { isLoggedInVar } from "../../apollo/client";
 
 export default function PaymentsList() {
   const searchParams = useSearchParams();
   const { searchUser, handleSearch, handleSort } = useSearch();
+  const isLoggedIn = isLoggedInVar();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.replace(ROUTES.signInAdmin);
+    }
+  }, [isLoggedIn, router]);
 
   const pageNumber = Number(searchParams.get("page")) || DEFAULT_PAGE;
   const pageSize = Number(searchParams.get("size")) || DEFAULT_PAGE_SIZE;
@@ -60,14 +71,22 @@ export default function PaymentsList() {
         <TableHeader>
           <TableRow>
             <TableHeadCell className={s.tableHeadCell} onClick={() => handleSort("userName")}>
-              Username {searchUser.sortBy === "userName" && (searchUser.sortDirection === "asc" ?
-              <ArrowIosUp width={24} height={24} color={"var(--dark-100)"} /> :
-              <ArrowIosDownOutline width={24} height={24} color={"var(--dark-100)"} />)}
+              Username{" "}
+              {searchUser.sortBy === "userName" &&
+                (searchUser.sortDirection === "asc" ? (
+                  <ArrowIosUp width={24} height={24} color={"var(--dark-100)"} />
+                ) : (
+                  <ArrowIosDownOutline width={24} height={24} color={"var(--dark-100)"} />
+                ))}
             </TableHeadCell>
             <TableHeadCell className={s.tableHeadCell} onClick={() => handleSort("createdAt")}>
-              Date added {searchUser.sortBy === "createdAt" && (searchUser.sortDirection === "asc" ?
-              <ArrowIosUp width={24} height={24} color={"var(--dark-100)"} /> :
-              <ArrowIosDownOutline width={24} height={24} color={"var(--dark-100)"} />)}
+              Date added{" "}
+              {searchUser.sortBy === "createdAt" &&
+                (searchUser.sortDirection === "asc" ? (
+                  <ArrowIosUp width={24} height={24} color={"var(--dark-100)"} />
+                ) : (
+                  <ArrowIosDownOutline width={24} height={24} color={"var(--dark-100)"} />
+                ))}
             </TableHeadCell>
             <TableHeadCell>Amount, $</TableHeadCell>
             <TableHeadCell>Subscription</TableHeadCell>
@@ -77,10 +96,12 @@ export default function PaymentsList() {
         <TableBody>
           {loading ? (
             <TableRow>
-              <TableCell colSpan={5} style={{ textAlign: "center" }}>Loading...</TableCell>
+              <TableCell colSpan={5} style={{ textAlign: "center" }}>
+                Loading...
+              </TableCell>
             </TableRow>
           ) : sortedItems.length ? (
-            sortedItems.map(payment => (
+            sortedItems.map((payment) => (
               <TableRow key={payment.id}>
                 <TableCell>{payment.userName}</TableCell>
                 <TableCell>{new Date(payment.createdAt).toLocaleDateString("ru-RU")}</TableCell>

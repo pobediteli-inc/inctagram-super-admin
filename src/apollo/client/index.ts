@@ -3,7 +3,9 @@ import { getMainDefinition } from "@apollo/client/utilities";
 import { createClient } from "graphql-ws";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 
-export const isLoggedInVar = makeVar(false);
+export const isLoggedInVar = makeVar<boolean>(
+  typeof window !== 'undefined' ? sessionStorage.getItem('isLoggedIn') === 'true' : false
+);
 
 export const cache = new InMemoryCache({
   typePolicies: {
@@ -53,5 +55,12 @@ export const client = new ApolloClient({
 
 // Helper function to update login state
 export const updateLoginState = (isLoggedIn: boolean) => {
+  if (typeof window !== 'undefined') {
+    if (isLoggedIn) {
+      sessionStorage.setItem('isLoggedIn', 'true');
+    } else {
+      sessionStorage.removeItem('isLoggedIn');
+    }
+  }
   isLoggedInVar(isLoggedIn);
 };
