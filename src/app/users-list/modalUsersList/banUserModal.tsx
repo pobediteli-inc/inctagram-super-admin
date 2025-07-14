@@ -12,7 +12,7 @@ type Props = {
   onClose: () => void;
   userId: number;
   userName: string;
-  refetch: () => Promise<ApolloQueryResult<GetUsersQuery>>;
+  refetch?: () => Promise<ApolloQueryResult<GetUsersQuery>>;
 };
 
 export const BanUserModal = ({ isOpen, userId, onClose, userName, refetch }: Props) => {
@@ -22,7 +22,9 @@ export const BanUserModal = ({ isOpen, userId, onClose, userName, refetch }: Pro
 
   const handleBanUser = async (userId: number, banReason: string) => {
     await banUser({ variables: { userId, banReason } });
-    await refetch();
+    if (refetch) {
+      await refetch();
+    }
     onClose();
   };
 
